@@ -12,6 +12,7 @@ namespace MovieInfo.Infraestructure.Persistence
     {
         public DbSet<Film> Films { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

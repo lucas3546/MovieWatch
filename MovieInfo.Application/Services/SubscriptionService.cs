@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Services;
-public class UserService
+public class SubscriptionService
 {
+
 }

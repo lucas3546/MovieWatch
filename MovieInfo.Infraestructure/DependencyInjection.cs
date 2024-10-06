@@ -17,7 +17,8 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IFilmRepository, FilmRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>(); 
+        services.AddScoped<IMovieRepository, MovieRepository>();
         return services;
     }
 }

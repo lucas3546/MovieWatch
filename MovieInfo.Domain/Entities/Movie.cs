@@ -16,6 +16,7 @@ namespace MovieInfo.Domain.Entities
         public TimeSpan Duration { get; set; } //Reminder: TimeSpan.FromHours(2.5) for example
         public List<Genre> Genres { get; set; }
 
-        public Media Media { get; set; }
+        public Media MovieCover { get; set; }
+        public Media MovieVideo { get; set; }
     }
 }

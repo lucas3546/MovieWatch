@@ -21,6 +21,8 @@ namespace MovieInfo.Application.Common.Requests
 
         public required string Director { get; set; }
 
-        public required IFormFile Image {  get; set; }
+        public required IFormFile MovieCover {  get; set; }
+
+        public required IFormFile MovieVideo { get; set; }
     }
 }

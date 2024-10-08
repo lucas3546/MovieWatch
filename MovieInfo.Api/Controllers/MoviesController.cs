@@ -19,6 +19,7 @@ namespace MovieInfo.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [RequestSizeLimit(500000000)]//500 mb
         public async Task<IActionResult> Create([FromForm] CreateMovieRequest request)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());

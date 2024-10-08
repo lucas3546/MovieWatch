@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http.Features;
+
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
@@ -19,6 +21,14 @@ public static class DependencyInjection
             });
         });
 
+        services.Configure<FormOptions>(x =>
+        {
+            x.ValueLengthLimit = int.MaxValue;
+            x.MultipartBodyLengthLimit = int.MaxValue;
+            x.MultipartBoundaryLengthLimit = int.MaxValue;
+            x.MultipartHeadersCountLimit = int.MaxValue;
+            x.MultipartHeadersLengthLimit = int.MaxValue;
+        });
 
 
         return services;

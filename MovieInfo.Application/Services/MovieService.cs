@@ -27,21 +27,30 @@ namespace MovieInfo.Application.Services
 
         public async Task<Result<int>> CreateMovieAsync(CreateMovieRequest request)
         {
-            string mediaType = MediaHelper.GetMediaType(request.Image);
-            if (!mediaType.Equals("image") || mediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only images are allowed."));
-            var media = new Media();
+            string movieCoverMediaType = MediaHelper.GetMediaType(request.MovieCover);
+            if (!movieCoverMediaType.Equals("image") || movieCoverMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only images are allowed."));
+
+            string movieVideoMediaType = MediaHelper.GetMediaType(request.MovieVideo);
+            if (!movieVideoMediaType.Equals("video") || movieVideoMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only videos are allowed."));
+
+            Media movieCover;
+            Media movieVideo;
+
             try
             {
-                var (fileName, fileType, isPublic) = await _fileService.SaveFileAsync(request.Image, true);
-                media.FileName = fileName;
-                media.FileExtension = fileType;
-                media.IsPublic = isPublic;
+                var (coverFileName, coverFileType, isCoverPublic) = await _fileService.SaveFileAsync(request.MovieCover, true);
+                movieCover = new Media(coverFileName, coverFileType, isCoverPublic);
 
+
+                var (videoFileName, videoFileType, isVideoPublic) = await _fileService.SaveFileAsync(request.MovieVideo, false);
+                movieVideo = new Media(videoFileName, videoFileType, isVideoPublic);
             }
             catch (Exception ex)
             {
-                return Result.Fail(new FileSaveError(request.Image.FileName, ex.Message));
+                return Result.Fail(new FileSaveError("File save error", ex.Message));
             }
+
+
             //Arreglar esta mierda
             var genres = new List<Genre>()
             {
@@ -51,7 +60,7 @@ namespace MovieInfo.Application.Services
                 }
             };
             
-            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, Media = media, Genres = genres};
+            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, MovieCover = movieCover, MovieVideo = movieVideo,Genres = genres};
 
             await _movieRepository.AddAsync(mov);
 
@@ -64,8 +73,10 @@ namespace MovieInfo.Application.Services
 
             if (mov == null) return Result.Fail(new NotFoundError($"Film with id {Id} not found"));
 
-            MediaModel mediaModel = new MediaModel(mov.Media.FileName, mov.Media.FileExtension, mov.Media.IsPublic);
-            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration, mov.Synopsis, mov.Language, mov.Director, mediaModel, mov.Genres.Select(o => o.Name));
+            MediaModel movieCover = new MediaModel(mov.MovieCover.FileName, mov.MovieCover.FileExtension, mov.MovieCover.IsPublic);
+            MediaModel movieVideo = new MediaModel(mov.MovieVideo.FileName, mov.MovieVideo.FileExtension, mov.MovieVideo.IsPublic);
+
+            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration, mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
 
             return Result.Ok(response);
         }

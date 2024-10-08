@@ -11,8 +11,8 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241008172137_Initial4")]
-    partial class Initial4
+    [Migration("20241008183658_Initial1")]
+    partial class Initial1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -132,15 +132,9 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EpisodeId")
-                        .IsUnique();
-
-                    b.HasIndex("MovieId")
                         .IsUnique();
 
                     b.ToTable("Media");
@@ -166,6 +160,12 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("MovieCoverId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MovieVideoId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Synopsis")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -177,6 +177,10 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FavListId");
+
+                    b.HasIndex("MovieCoverId");
+
+                    b.HasIndex("MovieVideoId");
 
                     b.ToTable("Movies");
                 });
@@ -371,13 +375,7 @@ namespace MovieInfo.Infraestructure.Migrations
                         .WithOne("Media")
                         .HasForeignKey("MovieInfo.Domain.Entities.Media", "EpisodeId");
 
-                    b.HasOne("MovieInfo.Domain.Entities.Movie", "Movie")
-                        .WithOne("Media")
-                        .HasForeignKey("MovieInfo.Domain.Entities.Media", "MovieId");
-
                     b.Navigation("Episode");
-
-                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Movie", b =>
@@ -385,6 +383,22 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasOne("MovieInfo.Domain.Entities.FavList", null)
                         .WithMany("Movies")
                         .HasForeignKey("FavListId");
+
+                    b.HasOne("MovieInfo.Domain.Entities.Media", "MovieCover")
+                        .WithMany()
+                        .HasForeignKey("MovieCoverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieInfo.Domain.Entities.Media", "MovieVideo")
+                        .WithMany()
+                        .HasForeignKey("MovieVideoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MovieCover");
+
+                    b.Navigation("MovieVideo");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Payment", b =>
@@ -452,12 +466,6 @@ namespace MovieInfo.Infraestructure.Migrations
             modelBuilder.Entity("MovieInfo.Domain.Entities.Genre", b =>
                 {
                     b.Navigation("Serie");
-                });
-
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Movie", b =>
-                {
-                    b.Navigation("Media")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Season", b =>

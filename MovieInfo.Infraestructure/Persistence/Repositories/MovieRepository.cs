@@ -19,7 +19,7 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         public async Task<Movie?> GetMovieByIdWithGenreAndMedia(int id)
         {
-            return await _movies.Include(o => o.Genres).Include(o => o.Media).FirstOrDefaultAsync(o => o.Id == id);
+            return await _movies.Include(o => o.Genres).Include(o => o.MovieVideo).Include(o => o.MovieCover).FirstOrDefaultAsync(o => o.Id == id);
         }
     }
 }

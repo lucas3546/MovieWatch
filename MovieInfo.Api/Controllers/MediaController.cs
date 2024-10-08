@@ -13,24 +13,18 @@ public class MediaController : ApiControllerBase
     [HttpGet("public/{fileName}")]
     public IActionResult GetPublicFile(string fileName)
     {
-        var filePath = Path.Combine(_publicFileDirectory, fileName);
-
-        if (!System.IO.File.Exists(filePath))
-        {
-            return NotFound(new { message = "File not found." });
-        }
-
-        var contentType = GetContentType(fileName);
-
-        return PhysicalFile(filePath, contentType);
+        return GetFile(fileName, _publicFileDirectory);
     }
 
-
     [HttpGet("protected/{fileName}")]
-    //Agregar el authorize luego al tener resuelto el tema del login y la subscripcion.
     public IActionResult GetProtectedFile(string fileName)
     {
-        var filePath = Path.Combine(_protectedFileDirectory, fileName);
+        return GetFile(fileName, _protectedFileDirectory);
+    }
+
+    private IActionResult GetFile(string fileName, string fileDirectory)
+    {
+        var filePath = Path.Combine(fileDirectory, fileName);
 
         if (!System.IO.File.Exists(filePath))
         {
@@ -38,8 +32,28 @@ public class MediaController : ApiControllerBase
         }
 
         var contentType = GetContentType(fileName);
+        var rangeHeader = Request.Headers["Range"].ToString();
 
-        return PhysicalFile(filePath, contentType);
+        if (string.IsNullOrEmpty(rangeHeader))
+        {
+            return PhysicalFile(filePath, contentType);
+        }
+
+        var fileInfo = new FileInfo(filePath);
+        var totalSize = fileInfo.Length;
+        var range = rangeHeader.Replace("bytes=", "").Split('-');
+        var start = long.Parse(range[0]);
+        var end = range.Length > 1 && !string.IsNullOrEmpty(range[1]) ? long.Parse(range[1]) : totalSize - 1;
+        var length = end - start + 1;
+
+        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        fileStream.Seek(start, SeekOrigin.Begin);
+
+        Response.StatusCode = 206; 
+        Response.Headers.Add("Accept-Ranges", "bytes");
+        Response.Headers.Add("Content-Range", $"bytes {start}-{end}/{totalSize}");
+
+        return File(fileStream, contentType, enableRangeProcessing: true);
     }
 
     private string GetContentType(string fileName)

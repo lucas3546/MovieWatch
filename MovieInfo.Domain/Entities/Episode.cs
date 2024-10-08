@@ -14,7 +14,6 @@ namespace MovieInfo.Domain.Entities
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
-        public int VideoId { get; set; }
-        public Video Video { get; set; }
+        public Media Media { get; set; }
     }
 }

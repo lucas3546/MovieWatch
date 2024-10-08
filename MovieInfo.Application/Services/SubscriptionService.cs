@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MovieInfo.Domain.Entities
+namespace MovieInfo.Application.Services;
+public class SubscriptionService
 {
-    public class Admin
-    {
-    }
+
 }

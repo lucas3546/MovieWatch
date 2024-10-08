@@ -14,7 +14,8 @@ public static class DepdencyInjection
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IFilmService, FilmService>();
-
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IMovieService, MovieService>();
         return services;
     }
 }

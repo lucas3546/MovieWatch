@@ -6,7 +6,7 @@ using MovieInfo.Application.Common.Requests;
 using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers
-{
+{/*
     public class FilmsController : ApiControllerBase
     {
         private readonly IFilmService _filmService;
@@ -51,5 +51,5 @@ namespace MovieInfo.Api.Controllers
 
             return Ok(result.Value);
         }
-    }
+    }*/
 }

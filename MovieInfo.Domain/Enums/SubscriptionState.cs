@@ -8,5 +8,5 @@ namespace MovieInfo.Domain.Enums;
 public enum SubscriptionState
 {
     Active,
-    Inactive
+    Expired
 }

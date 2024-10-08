@@ -7,7 +7,7 @@ public static class DependencyInjection
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
+        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(builder =>
@@ -18,6 +18,8 @@ public static class DependencyInjection
                        .AllowCredentials(); 
             });
         });
+
+
 
         return services;
     }

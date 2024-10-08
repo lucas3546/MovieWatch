@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieInfo.Infraestructure.Persistence;
 
@@ -10,27 +11,14 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008125910_Initial3")]
+    partial class Initial3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
-
-            modelBuilder.Entity("GenreMovie", b =>
-                {
-                    b.Property<int>("GenresId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("GenresId", "MovieId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("GenreMovie");
-                });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Episode", b =>
                 {
@@ -159,6 +147,9 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Property<int?>("FavListId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("GenreId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -174,6 +165,8 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FavListId");
+
+                    b.HasIndex("GenreId");
 
                     b.ToTable("Movies");
                 });
@@ -321,21 +314,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GenreMovie", b =>
-                {
-                    b.HasOne("MovieInfo.Domain.Entities.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieInfo.Domain.Entities.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MovieInfo.Domain.Entities.Episode", b =>
                 {
                     b.HasOne("MovieInfo.Domain.Entities.FavList", null)
@@ -382,6 +360,14 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasOne("MovieInfo.Domain.Entities.FavList", null)
                         .WithMany("Movies")
                         .HasForeignKey("FavListId");
+
+                    b.HasOne("MovieInfo.Domain.Entities.Genre", "Genre")
+                        .WithMany("Movie")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Payment", b =>
@@ -448,6 +434,8 @@ namespace MovieInfo.Infraestructure.Migrations
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Genre", b =>
                 {
+                    b.Navigation("Movie");
+
                     b.Navigation("Serie");
                 });
 

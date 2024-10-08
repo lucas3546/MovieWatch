@@ -14,10 +14,8 @@ namespace MovieInfo.Domain.Entities
         public string Director { get; set; }
         public string Language { get; set; }
         public TimeSpan Duration { get; set; } //Reminder: TimeSpan.FromHours(2.5) for example
-        public int GenreId { get; set; }
-        public Genre Genre { get; set; }
+        public List<Genre> Genres { get; set; }
 
-        public int VideoId { get; set; }
-        public Video Video { get; set; }
+        public Media Media { get; set; }
     }
 }

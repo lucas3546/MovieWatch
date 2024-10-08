@@ -13,7 +13,7 @@ public class AuthController : ApiControllerBase
         _authService = authService;
     }
 
-    [HttpPost]
+    [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

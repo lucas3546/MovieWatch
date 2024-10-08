@@ -19,7 +19,7 @@ namespace MovieInfo.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CreateMovieRequest request)
+        public async Task<IActionResult> Create([FromForm] CreateMovieRequest request)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
 
@@ -57,7 +57,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [NonAction]
         public async Task<IActionResult> UpdateMovieById(int id, UpdateMovieByIdRequest request)
         {
             var mov = await _movieService.GetMovieByIdAsync(id);
@@ -78,7 +78,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [NonAction]
         public async Task<IActionResult> DeleteMovieById(int id)
         {
             var mov = await _movieService.GetMovieByIdAsync(id);

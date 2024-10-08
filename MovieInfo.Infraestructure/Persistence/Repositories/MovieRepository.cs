@@ -16,5 +16,10 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             _movies = dbContext.Set<Movie>();
         }
+
+        public async Task<Movie?> GetMovieByIdWithGenreAndMedia(int id)
+        {
+            return await _movies.Include(o => o.Genres).Include(o => o.Media).FirstOrDefaultAsync(o => o.Id == id);
+        }
     }
 }

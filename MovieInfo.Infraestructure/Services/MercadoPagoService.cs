@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MovieInfo.Domain.Entities
+namespace MovieInfo.Infraestructure.Services;
+public class MercadoPagoService 
 {
-    public class Admin
-    {
-    }
 }

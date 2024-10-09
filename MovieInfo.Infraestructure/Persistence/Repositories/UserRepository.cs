@@ -1,3 +1,4 @@
+﻿using MovieInfo.Domain.Entities;
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Domain.Entities;
@@ -14,5 +15,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
         _users = dbContext.Set<User>();
+
     }
+    public User? GetUser(string email, string pass)
+    {
+        return _users.FirstOrDefault(x => x.Email == email && x.Password == pass);
+    }
+
 }

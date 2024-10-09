@@ -11,6 +11,9 @@ namespace MovieInfo.Application.Common.Interfaces.Services;
 public interface IAuthService
 {
     Task<Result<int>> RegisterAsync(RegisterUserRequest request);
+    User? GetUser(string email, string pass);
+    string? Authenticate(AuthenticateRequest authenticateRequest);
+
 
 
 }

@@ -23,6 +23,9 @@ namespace MovieInfo.Infraestructure.Persistence
         public DbSet<Serie> Series { get; set; }
         public DbSet<Media> Media { get; set; }
 
+        
+
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

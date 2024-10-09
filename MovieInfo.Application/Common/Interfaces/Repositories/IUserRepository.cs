@@ -8,4 +8,5 @@ using System.Threading.Tasks;
 namespace MovieInfo.Application.Common.Interfaces.Repositories;
 public interface IUserRepository : IGenericRepository<User>
 {
+    User? GetUser(string email, string pass);
 }

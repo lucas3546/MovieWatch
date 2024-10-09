@@ -13,6 +13,7 @@ namespace MovieInfo.Infraestructure.Persistence
         public DbSet<Film> Films { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Episode> Episodes { get; set; }
         public DbSet<FavList> FavLists { get; set; }
         public DbSet<Genre> Genres { get; set; }
@@ -40,6 +41,8 @@ namespace MovieInfo.Infraestructure.Persistence
                 .HasOne(r => r.Film)
                 .WithMany(m => m.Rating)
                 .HasForeignKey(r => r.FilmId);
+
+            modelBuilder.Seed();
         }
     }
 }

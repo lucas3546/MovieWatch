@@ -17,9 +17,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _users = dbContext.Set<User>();
 
     }
-    public User? GetUser(string email, string pass)
-    {
-        return _users.FirstOrDefault(x => x.Email == email && x.Password == pass);
-    }
 
+    public async Task<User?> GetUserWithRoleByEmailAsync(string Email)
+    {
+        return await _users.Include(o => o.Role).FirstOrDefaultAsync(o => o.Email == Email);
+    }
 }

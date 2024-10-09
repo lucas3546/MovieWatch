@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.OpenApi.Models;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,31 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(setupAction =>
+        {
+            setupAction.AddSecurityDefinition("MovieWatch", new OpenApiSecurityScheme() //Esto va a permitir usar swagger con el token.
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Description = "Enter the Json Web Token:"
+            });
+
+            setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "MovieWatch"
+                        }
+                    }, new List<string>()
+                }
+                });
+        });
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddCors(options =>
         {

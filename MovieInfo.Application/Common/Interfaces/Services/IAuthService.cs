@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,7 @@ namespace MovieInfo.Application.Common.Interfaces.Services;
 public interface IAuthService
 {
     Task<Result<int>> RegisterAsync(RegisterUserRequest request);
-    User? GetUser(string email, string pass);
-    string? Authenticate(AuthenticateRequest authenticateRequest);
-
+    Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest authenticateRequest);
 
 
 }

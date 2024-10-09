@@ -29,22 +29,20 @@ public class AuthController : ApiControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPost] //Vamos a usar un POST ya que debemos enviar los datos para hacer el login
-    public ActionResult<string> Authenticate(AuthenticateRequest authenticateRequest) //Enviamos como parámetro la clase que creamos arriba
+    [HttpPost("Login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Authenticate(AuthenticateRequest authenticateRequest) 
     {
-        string? token = _authService.Authenticate(authenticateRequest); //Lo primero que hacemos es llamar a una función que valide los parámetros que enviamos.
+        var result = await _authService.Authenticate(authenticateRequest); 
 
-        if (token == null || token == String.Empty)
+        if (result.IsFailed)
         {
-            return BadRequest("Incorrect user or password");
+            return BadRequest(result.Errors);
         }
-        {
-            return Ok(token); 
-        }
-        
+
+        return Ok(result.Value);
     }
-
-
-
 
 }

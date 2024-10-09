@@ -4,7 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
+using MovieInfo.Domain.Constants;
 using MovieInfo.Domain.Entities;
+using MovieInfo.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,85 +20,63 @@ namespace MovieInfo.Application.Services;
 public class AuthService : IAuthService
 {
     private readonly  IUserRepository _userRepository;
+    private readonly IRoleRepository _roleRepository;
     private readonly IConfiguration _config;
 
-    public AuthService(IUserRepository userRepository, IConfiguration config)
+    public AuthService(IUserRepository userRepository, IConfiguration config, IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
         _config = config;
+        _roleRepository = roleRepository;
     }
     public async Task<Result<int>> RegisterAsync(RegisterUserRequest request)
     {
+        var role = await _roleRepository.GetRoleByName(Roles.User);
+        if (role == null) return Result.Fail("An error ocurred with the role.");
+
         var user = new User
         {
             Name = request.UserName,
             Password = request.Password,
             Email = request.Email,
+            Role = role
         };
 
         await _userRepository.AddAsync(user);
 
         return Result.Ok(user.Id);
     }
-
-    public User? GetUser(string email, string pass)
-    {
-        return _userRepository.GetUser(email, pass);
-    }
-
     
-    private User? ValidateUser(AuthenticateRequest authenticateRequest)
+    public async Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest authenticateRequest)
     {
-        if (string.IsNullOrEmpty(authenticateRequest.Email) || string.IsNullOrEmpty(authenticateRequest.Password))
-        {
-            return null;
-        }
+        var user = await _userRepository.GetUserWithRoleByEmailAsync(authenticateRequest.Email);
 
-        var user = _userRepository.GetUser(authenticateRequest.Email, authenticateRequest.Password);
+        if (user == null) return Result.Fail(new NotFoundError("User not found"));
 
-        if (authenticateRequest.Email == user.Email && authenticateRequest.Password == user.Password)
-        {
-            return user;
-        }
+        if (!user.Password.Equals(authenticateRequest.Password)) return Result.Fail(new AccessForbiddenError("Email or Password are incorrect"));
 
-        return null;
-    }
-
-
-    public string? Authenticate(AuthenticateRequest authenticateRequest)
-    {
-        var user = ValidateUser(authenticateRequest);
-
-        if (user == null)
-        {
-            return null;
-        }
-
-        //Paso 2: Crear el token
-        var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["JWT:Key"])); //Traemos la SecretKey del Json. agregar antes: using Microsoft.IdentityModel.Tokens;
+        //Generate jwt.
+        var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["JWT:Key"])); 
 
         var credentials = new SigningCredentials(securityPassword, SecurityAlgorithms.HmacSha256);
 
-        //Los claims son datos en clave -> valor que nos permite guardar data del usuario.
         var claimsForToken = new List<Claim>();
-        claimsForToken.Add(new Claim("sub", user.Id.ToString())); //"sub" es una key estándar que significa unique user identifier, es decir, si mandamos el id del usuario por convención lo hacemos con la key "sub".
-        claimsForToken.Add(new Claim("given_name", user.Name));
-        //claimsForToken.Add(new Claim(ClaimTypes.Role, authenticateRequest.UserType.ToString())); //quiere usar la API por lo general lo que espera es que se estén usando estas keys.
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())); 
+        claimsForToken.Add(new Claim(ClaimTypes.Name, user.Name));
+        claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.RoleName));
 
-        var jwtSecurityToken = new JwtSecurityToken( //agregar using System.IdentityModel.Tokens.Jwt; Acá es donde se crea el token con toda la data que le pasamos antes.
+        var jwtSecurityToken = new JwtSecurityToken( 
         _config["JWT:Issuer"],
         _config["JWT:Audience"],
         claimsForToken,
         DateTime.UtcNow,
         DateTime.UtcNow.AddHours(1),
         credentials);
-        //Pasamos el token a string
-        var tokenToReturn = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        var jwt = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-        return tokenToReturn.ToString();
+
+        return Result.Ok(new AuthenticateResponse(jwt));
     }
-
-
 
 }
 

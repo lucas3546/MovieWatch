@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace MovieInfo.Infraestructure.Migrations
 {
     /// <inheritdoc />
@@ -117,7 +119,7 @@ namespace MovieInfo.Infraestructure.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    RoleId = table.Column<int>(type: "INTEGER", nullable: false)
+                    RoleId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,8 +128,7 @@ namespace MovieInfo.Infraestructure.Migrations
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -193,29 +194,6 @@ namespace MovieInfo.Infraestructure.Migrations
                         name: "FK_Episodes_Seasons_SeasonId",
                         column: x => x.SeasonId,
                         principalTable: "Seasons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Amount = table.Column<decimal>(type: "TEXT", nullable: false),
-                    PaidIn = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    SubscriptionId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Subscriptions_SubscriptionId",
-                        column: x => x.SubscriptionId,
-                        principalTable: "Subscriptions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -302,6 +280,36 @@ namespace MovieInfo.Infraestructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "RoleName" },
+                values: new object[,]
+                {
+                    { 1, "User" },
+                    { 2, "Employee" },
+                    { 3, "Admin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Name", "Password", "RoleId" },
+                values: new object[,]
+                {
+                    { 1, "administrador@gmail.com", "Administrador", "Administrador1", 3 },
+                    { 2, "empleado@gmail.com", "Empleado", "Empleado1", 2 },
+                    { 3, "usuario@gmail.com", "Usuario", "Usuario1", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Subscriptions",
+                columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1632), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1629), 0, 1 },
+                    { 2, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1639), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1638), 0, 2 },
+                    { 3, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640), 0, 3 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Episodes_FavListId",
                 table: "Episodes",
@@ -344,11 +352,6 @@ namespace MovieInfo.Infraestructure.Migrations
                 column: "MovieVideoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_SubscriptionId",
-                table: "Payments",
-                column: "SubscriptionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ratings_FilmId",
                 table: "Ratings",
                 column: "FilmId");
@@ -377,19 +380,16 @@ namespace MovieInfo.Infraestructure.Migrations
                 name: "GenreMovie");
 
             migrationBuilder.DropTable(
-                name: "Payments");
-
-            migrationBuilder.DropTable(
                 name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "Series");
 
             migrationBuilder.DropTable(
-                name: "Movies");
+                name: "Subscriptions");
 
             migrationBuilder.DropTable(
-                name: "Subscriptions");
+                name: "Movies");
 
             migrationBuilder.DropTable(
                 name: "Films");

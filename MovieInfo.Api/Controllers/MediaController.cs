@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieInfo.Domain.Constants;
 
@@ -17,6 +18,7 @@ public class MediaController : ApiControllerBase
     }
 
     [HttpGet("protected/{fileName}")]
+    [Authorize(Policy = "SubscriptionActivePolicy")]
     public IActionResult GetProtectedFile(string fileName)
     {
         return GetFile(fileName, _protectedFileDirectory);

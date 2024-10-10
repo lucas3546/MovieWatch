@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Services;
 using MovieInfo.Domain.Entities;
@@ -13,9 +14,9 @@ public static class DepdencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IFilmService, FilmService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IMovieService, MovieService>();
+        services.AddScoped<ISubscriptionService, SubscriptionService>();
         return services;
     }
 }

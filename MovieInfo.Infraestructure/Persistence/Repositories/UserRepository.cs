@@ -18,8 +18,8 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 
     }
 
-    public async Task<User?> GetUserWithRoleByEmailAsync(string Email)
+    public async Task<User?> GetUserWithRoleAndSubscriptionByEmailAsync(string Email)
     {
-        return await _users.Include(o => o.Role).FirstOrDefaultAsync(o => o.Email == Email);
+        return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Email == Email);
     }
 }

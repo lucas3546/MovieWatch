@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MercadoPago.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MovieInfo.Application.Common.Interfaces;
 using MovieInfo.Application.Common.Interfaces.Repositories;
+using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Infraestructure.Persistence;
 using MovieInfo.Infraestructure.Persistence.Repositories;
 using MovieInfo.Infraestructure.Services;
@@ -15,18 +16,23 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfraestructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        //MP Global Configuration
+        MercadoPagoConfig.AccessToken = configuration["MercadoPagoConfig:AccessToken"];
+        //
+
         services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlite(configuration.GetConnectionString("DefaultConnection"),
                         builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IFilmRepository, FilmRepository>();
         services.AddScoped<IUserRepository, UserRepository>(); 
         services.AddScoped<IMovieRepository, MovieRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
         services.AddAuthentication(x =>
         {

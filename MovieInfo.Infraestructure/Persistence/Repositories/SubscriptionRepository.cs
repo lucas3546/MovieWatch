@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Infraestructure.Persistence.Repositories;
-public class MediaRepository : GenericRepository<Media>, IMediaRepository
+public class SubscriptionRepository : GenericRepository<Subscription>, ISubscriptionRepository
 {
-    private readonly DbSet<Media> _media;
-    public MediaRepository(ApplicationDbContext dbContext) : base(dbContext)
+    private readonly DbSet<Subscription> _subscriptions;
+    public SubscriptionRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _media = dbContext.Set<Media>();
+        _subscriptions = dbContext.Set<Subscription>();
     }
 }

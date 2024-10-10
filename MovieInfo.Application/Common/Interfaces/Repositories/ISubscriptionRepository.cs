@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Interfaces.Repositories;
-public interface IUserRepository : IGenericRepository<User>
+public interface ISubscriptionRepository : IGenericRepository<Subscription>
 {
-    Task<User?> GetUserWithRoleAndSubscriptionByEmailAsync(string Email);
 }

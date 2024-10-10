@@ -21,13 +21,15 @@ public class AuthService : IAuthService
 {
     private readonly  IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IConfiguration _config;
 
-    public AuthService(IUserRepository userRepository, IConfiguration config, IRoleRepository roleRepository)
+    public AuthService(IUserRepository userRepository, IConfiguration config, IRoleRepository roleRepository, ISubscriptionRepository subscriptionRepository)
     {
         _userRepository = userRepository;
         _config = config;
         _roleRepository = roleRepository;
+        _subscriptionRepository = subscriptionRepository;
     }
     public async Task<Result<int>> RegisterAsync(RegisterUserRequest request)
     {
@@ -49,11 +51,13 @@ public class AuthService : IAuthService
     
     public async Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest authenticateRequest)
     {
-        var user = await _userRepository.GetUserWithRoleByEmailAsync(authenticateRequest.Email);
+        var user = await _userRepository.GetUserWithRoleAndSubscriptionByEmailAsync(authenticateRequest.Email);
 
         if (user == null) return Result.Fail(new NotFoundError("User not found"));
 
         if (!user.Password.Equals(authenticateRequest.Password)) return Result.Fail(new AccessForbiddenError("Email or Password are incorrect"));
+
+        var subscriptionState = user.Subscription == null ? "Inactive" : user.Subscription.State.ToString();
 
         //Generate jwt.
         var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["JWT:Key"])); 
@@ -64,6 +68,8 @@ public class AuthService : IAuthService
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())); 
         claimsForToken.Add(new Claim(ClaimTypes.Name, user.Name));
         claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.RoleName));
+        claimsForToken.Add(new Claim("SubscriptionState", subscriptionState));
+
 
         var jwtSecurityToken = new JwtSecurityToken( 
         _config["JWT:Issuer"],

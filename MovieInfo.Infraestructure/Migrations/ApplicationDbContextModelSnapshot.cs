@@ -182,35 +182,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("PaidIn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SubscriptionId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubscriptionId");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("MovieInfo.Domain.Entities.Rating", b =>
                 {
                     b.Property<int>("Id")
@@ -332,6 +303,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Subscriptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ExpirationDate = new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1632),
+                            StartDate = new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1629),
+                            State = 0,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ExpirationDate = new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1639),
+                            StartDate = new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1638),
+                            State = 0,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ExpirationDate = new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640),
+                            StartDate = new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640),
+                            State = 0,
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.User", b =>
@@ -352,7 +349,7 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -360,6 +357,32 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "administrador@gmail.com",
+                            Name = "Administrador",
+                            Password = "Administrador1",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "empleado@gmail.com",
+                            Name = "Empleado",
+                            Password = "Empleado1",
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "usuario@gmail.com",
+                            Name = "Usuario",
+                            Password = "Usuario1",
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("GenreMovie", b =>
@@ -435,17 +458,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Navigation("MovieVideo");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Payment", b =>
-                {
-                    b.HasOne("MovieInfo.Domain.Entities.Subscription", "Subscription")
-                        .WithMany("Payments")
-                        .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
-                });
-
             modelBuilder.Entity("MovieInfo.Domain.Entities.Rating", b =>
                 {
                     b.HasOne("MovieInfo.Domain.Entities.Film", "Film")
@@ -483,9 +495,7 @@ namespace MovieInfo.Infraestructure.Migrations
                 {
                     b.HasOne("MovieInfo.Domain.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });
@@ -521,11 +531,6 @@ namespace MovieInfo.Infraestructure.Migrations
             modelBuilder.Entity("MovieInfo.Domain.Entities.Season", b =>
                 {
                     b.Navigation("Episodes");
-                });
-
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Subscription", b =>
-                {
-                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.User", b =>

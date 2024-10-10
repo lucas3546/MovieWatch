@@ -14,7 +14,6 @@ namespace MovieInfo.Domain.Entities
         public DateTime ExpirationDate { get; set; }
         public SubscriptionState State { get; set; }
 
-        public List<Payment>? Payments { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }

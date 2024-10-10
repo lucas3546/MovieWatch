@@ -9,6 +9,23 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("SubscriptionActivePolicy", policy =>
+            {
+                policy.RequireClaim("SubscriptionState", "Active");
+            });
+
+            options.AddPolicy("AdminOrEmployeePolicy", policy =>
+            {
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole("Admin") || context.User.IsInRole("Employee")
+                );
+            });
+
+        });
+
         services.AddSwaggerGen(setupAction =>
         {
             setupAction.AddSecurityDefinition("MovieWatch", new OpenApiSecurityScheme() //Esto va a permitir usar swagger con el token.

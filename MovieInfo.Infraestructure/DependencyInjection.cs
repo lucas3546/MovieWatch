@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
         services.AddAuthentication(x =>

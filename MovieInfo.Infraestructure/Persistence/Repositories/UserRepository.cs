@@ -22,4 +22,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Email == Email);
     }
+
+    public async Task<User?> GetUserWithRoleAndSubscriptionByNameAsync(string Name)
+    {
+        return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Name == Name);
+    }
 }

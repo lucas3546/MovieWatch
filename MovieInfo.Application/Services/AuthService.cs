@@ -7,6 +7,7 @@ using MovieInfo.Application.Common.Requests;
 using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Constants;
 using MovieInfo.Domain.Entities;
+using MovieInfo.Domain.Enums;
 using MovieInfo.Domain.Errors;
 using System;
 using System.Collections.Generic;
@@ -22,14 +23,13 @@ public class AuthService : IAuthService
     private readonly  IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
-    private readonly IConfiguration _config;
-
-    public AuthService(IUserRepository userRepository, IConfiguration config, IRoleRepository roleRepository, ISubscriptionRepository subscriptionRepository)
+    private readonly IJwtService _jwtService;
+    public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, ISubscriptionRepository subscriptionRepository, IJwtService jwtService)
     {
         _userRepository = userRepository;
-        _config = config;
         _roleRepository = roleRepository;
         _subscriptionRepository = subscriptionRepository;
+        _jwtService = jwtService;
     }
     public async Task<Result<int>> RegisterAsync(RegisterUserRequest request)
     {
@@ -59,29 +59,43 @@ public class AuthService : IAuthService
 
         var subscriptionState = user.Subscription == null ? "Inactive" : user.Subscription.State.ToString();
 
-        //Generate jwt.
-        var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["JWT:Key"])); 
+        user.RefreshToken = Guid.NewGuid().ToString();
 
-        var credentials = new SigningCredentials(securityPassword, SecurityAlgorithms.HmacSha256);
+        await _userRepository.UpdateAsync(user);
 
         var claimsForToken = new List<Claim>();
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())); 
-        claimsForToken.Add(new Claim(ClaimTypes.Name, user.Name));
-        claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.RoleName));
-        claimsForToken.Add(new Claim("SubscriptionState", subscriptionState));
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
+        claimsForToken.Add(new Claim("role", user.Role.RoleName));
+        claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
 
+        string jwt =_jwtService.GenerateToken(claimsForToken);
+        
+        return Result.Ok(new AuthenticateResponse(jwt, user.RefreshToken));
+    }
 
-        var jwtSecurityToken = new JwtSecurityToken( 
-        _config["JWT:Issuer"],
-        _config["JWT:Audience"],
-        claimsForToken,
-        DateTime.UtcNow,
-        DateTime.UtcNow.AddHours(1),
-        credentials);
-        var jwt = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+    public async Task<Result<RefreshTokenResponse>> RefreshToken(string refreshToken, string userName)
+    {
+        var user = await _userRepository.GetUserWithRoleAndSubscriptionByNameAsync(userName);
+        if (user == null) return Result.Fail(new NotFoundError("User not found"));
 
+        if (!refreshToken.Equals(user.RefreshToken)) return Result.Fail(new AccessForbiddenError("Your refresh token is outdated, please log in again!"));
 
-        return Result.Ok(new AuthenticateResponse(jwt));
+        var subscriptionState = user.Subscription == null ? "Inactive" : user.Subscription.State.ToString();
+
+        user.RefreshToken = Guid.NewGuid().ToString();
+
+        await _userRepository.UpdateAsync(user);
+
+        var claimsForToken = new List<Claim>();
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
+        claimsForToken.Add(new Claim("role", user.Role.RoleName));
+        claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
+
+        string jwt = _jwtService.GenerateToken(claimsForToken);
+
+        return Result.Ok(new RefreshTokenResponse(jwt, user.RefreshToken));
     }
 
 }

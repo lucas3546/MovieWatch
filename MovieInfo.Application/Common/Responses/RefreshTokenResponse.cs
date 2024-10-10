@@ -5,4 +5,4 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Responses;
-public record AuthenticateResponse(string Jwt, string RefreshToken);
+public record RefreshTokenResponse(string Jwt, string RefreshToken);

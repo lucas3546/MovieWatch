@@ -13,6 +13,7 @@ public interface IAuthService
 {
     Task<Result<int>> RegisterAsync(RegisterUserRequest request);
     Task<Result<AuthenticateResponse>> Authenticate(AuthenticateRequest authenticateRequest);
+    Task<Result<RefreshTokenResponse>> RefreshToken(string refreshToken, string userName);
 
 
 }

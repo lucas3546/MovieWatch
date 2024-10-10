@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.OpenApi.Models;
+using MovieInfo.Api.Services;
+using MovieInfo.Domain.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -9,12 +11,13 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddAuthorization(options =>
         {
             options.AddPolicy("SubscriptionActivePolicy", policy =>
             {
-                policy.RequireClaim("SubscriptionState", "Active");
+                policy.RequireClaim("subscriptionState", "Active");
             });
 
             options.AddPolicy("AdminOrEmployeePolicy", policy =>

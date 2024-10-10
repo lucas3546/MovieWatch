@@ -65,7 +65,7 @@ public class AuthController : ApiControllerBase
     [Authorize]
     public async Task<IActionResult> Refresh()
     {
-        if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken)) return BadRequest();
+        if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken)) return BadRequest("You don't have a refresh token in the cookie!");
 
         var userName = _currentUser.Name;
         if (userName is null) return Forbid("You don't have permissions to use this");

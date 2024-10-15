@@ -33,5 +33,23 @@ namespace MovieInfo.Infraestructure.Services
 
             return (uniqueFileName, fileType, isPublic);
         }
+
+        public bool DeleteFile(string fileName, bool isPublic)
+        {
+            string directoryPath = isPublic ? FilePaths.PublicMediaPath : FilePaths.ProtectedMediaPath;
+            string fullPath = Path.Combine(directoryPath, fileName);
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+                return true; 
+            }
+
+            return false; 
+        }
+
+
     }
+
+
 }

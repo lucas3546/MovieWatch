@@ -10,5 +10,7 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories
     public interface IGenreRepository : IGenericRepository<Genre>
     {
         Task<Genre?> GetGenreByName(string Name);
+
+        IList<Genre> GetGenresByNames(IList<string> genreNames);
     }
 }

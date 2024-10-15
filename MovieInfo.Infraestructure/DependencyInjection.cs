@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMercadoPagoService, MercadoPagoService>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
 
         services.AddAuthentication(x =>
         {

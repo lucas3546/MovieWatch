@@ -17,6 +17,7 @@ public static class DepdencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IMovieService, MovieService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
+        services.AddScoped<IGenreService, GenreService>();
         return services;
     }
 }

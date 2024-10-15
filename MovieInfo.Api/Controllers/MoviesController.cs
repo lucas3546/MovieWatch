@@ -23,7 +23,7 @@ namespace MovieInfo.Api.Controllers
         [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<IActionResult> Create([FromForm] CreateMovieRequest request)
         {
-            if(!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
 
             var result = await _movieService.CreateMovieAsync(request);
 
@@ -47,7 +47,7 @@ namespace MovieInfo.Api.Controllers
             {
                 var error = result.Errors.First();
 
-                if(error is NotFoundError) return NotFound(error.Message);
+                if (error is NotFoundError) return NotFound(error.Message);
 
                 return BadRequest(error.Message);
             }
@@ -55,47 +55,62 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [NonAction]
-        public async Task<IActionResult> UpdateMovieById(int id, UpdateMovieByIdRequest request)
+        [HttpGet("by-genre/{genreName}")]
+        public async Task<IActionResult> GetMoviesByGenreName(string genreName)
         {
-            var mov = await _movieService.GetMovieByIdAsync(id);
+            var result = await _movieService.GetMoviesByGenreName(genreName);
 
-            if (mov.IsFailed)
+            if (result.IsFailed)
             {
-                var error = mov.Errors.First();
-
-                if (error is NotFoundError) return NotFound(error.Message);
+                var error = result.Errors.First();
 
                 return BadRequest(error.Message);
             }
 
-            return Ok(mov.Value);
+            return Ok(result.Value);
         }
 
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [NonAction]
-        public async Task<IActionResult> DeleteMovieById(int id)
-        {
-            var mov = await _movieService.GetMovieByIdAsync(id);
+        //[HttpPut("{id}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[NonAction]
+        //public async Task<IActionResult> UpdateMovieById(int id, UpdateMovieByIdRequest request)
+        //{
+        //    var mov = await _movieService.GetMovieByIdAsync(id);
 
-            if (mov.IsFailed)
-            {
-                var error = mov.Errors.First();
+        //    if (mov.IsFailed)
+        //    {
+        //        var error = mov.Errors.First();
 
-                if (error is NotFoundError) return NotFound(error.Message);
+        //        if (error is NotFoundError) return NotFound(error.Message);
 
-                return BadRequest(error.Message);
-            }
-           
+        //        return BadRequest(error.Message);
+        //    }
 
-            return Ok(mov.Value);
-        }
+        //    return Ok(mov.Value);
+        //}
+
+        //[HttpDelete("{id}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[NonAction]
+        //public async Task<IActionResult> DeleteMovieById(int id)
+        //{
+        //    var mov = await _movieService.GetMovieByIdAsync(id);
+
+        //    if (mov.IsFailed)
+        //    {
+        //        var error = mov.Errors.First();
+
+        //        if (error is NotFoundError) return NotFound(error.Message);
+
+        //        return BadRequest(error.Message);
+        //    }
+
+
+        //    return Ok(mov.Value);
+        //}
     }
 }

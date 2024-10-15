@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieInfo.Domain.Constants;
+using System.Net;
 
 namespace MovieInfo.Api.Controllers;
 
@@ -12,6 +13,7 @@ public class MediaController : ApiControllerBase
 
 
     [HttpGet("public/{fileName}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileStreamResult))]
     public IActionResult GetPublicFile(string fileName)
     {
         return GetFile(fileName, _publicFileDirectory);

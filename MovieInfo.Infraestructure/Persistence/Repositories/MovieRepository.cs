@@ -21,5 +21,11 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             return await _movies.Include(o => o.Genres).Include(o => o.MovieVideo).Include(o => o.MovieCover).FirstOrDefaultAsync(o => o.Id == id);
         }
+
+        public async Task<IEnumerable<Movie>?> GetMoviesByGenreName(string genreName)
+        {
+            return await _movies.Include(o => o.Genres).Include(o => o.MovieCover).Include(o => o.MovieVideo).Where(m => m.Genres.Any(g => g.Name == genreName)).ToListAsync();
+
+        }
     }
 }

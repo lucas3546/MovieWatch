@@ -60,7 +60,7 @@ namespace MovieInfo.Application.Services
                 }
             };
             
-            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, MovieCover = movieCover, MovieVideo = movieVideo,Genres = genres};
+            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, MovieCover = movieCover, MovieVideo = movieVideo,Genres = genres};
 
             await _movieRepository.AddAsync(mov);
 
@@ -76,7 +76,23 @@ namespace MovieInfo.Application.Services
             MediaModel movieCover = new MediaModel(mov.MovieCover.FileName, mov.MovieCover.FileExtension, mov.MovieCover.IsPublic);
             MediaModel movieVideo = new MediaModel(mov.MovieVideo.FileName, mov.MovieVideo.FileExtension, mov.MovieVideo.IsPublic);
 
-            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration, mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
+            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration, mov.Year,mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
+
+            return Result.Ok(response);
+        }
+
+        public async Task<Result<IEnumerable<GetMoviesByGenreNameResponse>>> GetMoviesByGenreName(string genreName)
+        {
+            var movies = await _movieRepository.GetMoviesByGenreName(genreName);
+
+            if (movies == null) return Result.Fail(new NotFoundError($"Error when get movies by genre"));
+
+
+            var response = movies.Select(o =>
+            new GetMoviesByGenreNameResponse(o.Id, o.Title, o.Duration, o.Year, o.Synopsis, o.Language, o.Director,
+            new MediaModel(o.MovieCover.FileName, o.MovieCover.FileExtension, o.MovieCover.IsPublic),
+            new MediaModel(o.MovieVideo.FileName, o.MovieVideo.FileExtension, o.MovieVideo.IsPublic), 
+            o.Genres.Select(o => o.Name)));
 
             return Result.Ok(response);
         }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieInfo.Infraestructure.Persistence;
 
@@ -10,9 +11,11 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241014222155_Initial3")]
+    partial class Initial3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -86,38 +89,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Drama"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Comedia"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Aventura"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Ciencia Ficción"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Terror"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Acción"
-                        });
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Media", b =>
@@ -303,34 +274,26 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(96),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(93),
+                            ExpirationDate = new DateTime(2029, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2574),
+                            StartDate = new DateTime(2024, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2572),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(104),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(103),
+                            ExpirationDate = new DateTime(2029, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2581),
+                            StartDate = new DateTime(2024, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2581),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(105),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(105),
+                            ExpirationDate = new DateTime(2029, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2583),
+                            StartDate = new DateTime(2024, 10, 14, 22, 21, 55, 282, DateTimeKind.Utc).AddTicks(2583),
                             State = 0,
                             UserId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(107),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(107),
-                            State = 1,
-                            UserId = 4
                         });
                 });
 
@@ -384,17 +347,9 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 3,
-                            Email = "usuario1@gmail.com",
-                            Name = "Usuario1",
+                            Email = "usuario@gmail.com",
+                            Name = "Usuario",
                             Password = "Usuario1",
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Email = "usuario2@gmail.com",
-                            Name = "Usuario2",
-                            Password = "Usuario2",
                             RoleId = 1
                         });
                 });

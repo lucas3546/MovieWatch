@@ -23,9 +23,4 @@
     <ProjectReference Include="..\MovieInfo.Infraestructure\MovieInfo.Infraestructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Media\Protected\" />
-    <Folder Include="Media\Public\" />
-  </ItemGroup>
-
 </Project>

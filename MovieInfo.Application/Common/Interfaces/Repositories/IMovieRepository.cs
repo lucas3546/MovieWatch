@@ -10,5 +10,6 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories
     public interface IMovieRepository : IGenericRepository<Movie>
     {
         Task<Movie?> GetMovieByIdWithGenreAndMedia(int id);
+        Task<IEnumerable<Movie>?> GetMoviesByGenreName(string genreName);
     }
 }

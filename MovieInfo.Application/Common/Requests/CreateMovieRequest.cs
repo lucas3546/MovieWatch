@@ -19,6 +19,8 @@ namespace MovieInfo.Application.Common.Requests
         [MaxLength(20)]
         public required string Language { get; set; }
 
+        public int Year { get; set; }
+
         public required string Director { get; set; }
 
         public required IFormFile MovieCover {  get; set; }

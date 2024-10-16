@@ -18,6 +18,7 @@ namespace MovieInfo.Application.Common.Requests
         public required string Synopsis { get; set; }
         [MaxLength(20)]
         public required string Language { get; set; }
+        public required List<string> GenreNames { get; set; }
 
         public int Year { get; set; }
 

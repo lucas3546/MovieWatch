@@ -9,4 +9,7 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories;
 public interface IFileService
 {
     Task<(string fileName, string fileType, bool isPublic)> SaveFileAsync(IFormFile file, bool isPublic);
+
+    bool DeleteFile(string fileName, bool isPublic);
+
 }

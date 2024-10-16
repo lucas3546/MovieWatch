@@ -10,6 +10,7 @@ using MovieInfo.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +19,13 @@ namespace MovieInfo.Application.Services
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository _movieRepository;
+        private readonly IGenreRepository _genreRepository;
         private readonly IFileService _fileService;
-        public MovieService(IMovieRepository movieRepository, IFileService fileService)
+        public MovieService(IMovieRepository movieRepository, IFileService fileService, IGenreRepository genreRepository)
         {
             _movieRepository = movieRepository;
             _fileService = fileService;
+            _genreRepository = genreRepository;
         }
 
         public async Task<Result<int>> CreateMovieAsync(CreateMovieRequest request)
@@ -50,16 +53,10 @@ namespace MovieInfo.Application.Services
                 return Result.Fail(new FileSaveError("File save error", ex.Message));
             }
 
+            var genres = _genreRepository.GetGenresByNames(request.GenreNames);
 
-            //Arreglar esta mierda
-            var genres = new List<Genre>()
-            {
-                new Genre
-                {
-                    Name = "test"
-                }
-            };
-            
+            if (genres is null) return Result.Fail(new NotFoundError($"Genres not found"));
+
             var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, MovieCover = movieCover, MovieVideo = movieVideo,Genres = genres};
 
             await _movieRepository.AddAsync(mov);
@@ -99,14 +96,54 @@ namespace MovieInfo.Application.Services
 
         public async Task<Result> UpdateMovieByIdAsync(int id, UpdateMovieByIdRequest request)
         {
-            var movie = await _movieRepository.GetByIdAsync(id);
+            var movie = await _movieRepository.GetMovieByIdWithGenreAndMedia(id);
 
             if (movie == null) return Result.Fail(new NotFoundError($"Film with id {id} not found"));
 
+            Media movieCover;
+            Media movieVideo;
+
+            try
+            {
+                bool deleteMovieCoverResult = _fileService.DeleteFile(movie.MovieCover.FileName, movie.MovieCover.IsPublic);
+                bool deleteMovieVideoResult = _fileService.DeleteFile(movie.MovieVideo.FileName, movie.MovieVideo.IsPublic);
+                if (deleteMovieCoverResult is false || deleteMovieVideoResult is false)
+                {
+                    return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
+                }
+            }
+            catch(Exception ex)
+            {
+                return Result.Fail($"File delete error: {ex.Message}");
+            }
+
+            try
+            {
+
+                var (coverFileName, coverFileType, isCoverPublic) = await _fileService.SaveFileAsync(request.MovieCover, true);
+                movieCover = new Media(coverFileName, coverFileType, isCoverPublic);
+
+
+                var (videoFileName, videoFileType, isVideoPublic) = await _fileService.SaveFileAsync(request.MovieVideo, false);
+                movieVideo = new Media(videoFileName, videoFileType, isVideoPublic);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(new FileSaveError("File save error", ex.Message));
+            }
+
+            var genres = _genreRepository.GetGenresByNames(request.GenreNames);
+            if (genres.Count == 0) return Result.Fail(new NotFoundError("Genres not found"));
+
             movie.Title = request.Title;
-            movie.Duration = request.Duration;
+            movie.Duration = TimeSpan.FromHours(request.Duration);
             movie.Synopsis = request.Synopsis;
             movie.Language = request.Language;
+            movie.Director = request.Director;
+            movie.Year = request.Year;
+            movie.Genres = genres;
+            movie.MovieCover = movieCover;
+            movie.MovieVideo = movieVideo;
 
             await _movieRepository.UpdateAsync(movie);
 
@@ -115,12 +152,26 @@ namespace MovieInfo.Application.Services
 
         public async Task<Result> DeleteMovieByIdAsync(int id)
         {
-            var movie = await _movieRepository.GetByIdAsync(id);
+            var movie = await _movieRepository.GetMovieByIdWithGenreAndMedia(id);
 
             if (movie == null) return Result.Fail(new NotFoundError($"Film with id {id} not found"));
 
             await _movieRepository.DeleteAsync(movie);
-            
+
+            try
+            {
+                bool deleteMovieCoverResult = _fileService.DeleteFile(movie.MovieCover.FileName, movie.MovieCover.IsPublic);
+                bool deleteMovieVideoResult = _fileService.DeleteFile(movie.MovieVideo.FileName, movie.MovieVideo.IsPublic);
+                if(deleteMovieCoverResult is false || deleteMovieVideoResult is false)
+                {
+                    return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail($"{ex.Message}");
+            }
+
             return Result.Ok();
         }
     }

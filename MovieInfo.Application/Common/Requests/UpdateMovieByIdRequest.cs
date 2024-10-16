@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,10 +13,19 @@ namespace MovieInfo.Application.Common.Requests
         [MaxLength(30)]
         public required string Title { get; set; }
         [Range(0.25, 4)]
-        public TimeSpan Duration { get; set; }
+        public required double Duration { get; set; }
         [MaxLength(100)]
-        public string Synopsis { get; set; }
+        public required string Synopsis { get; set; }
         [MaxLength(20)]
-        public string Language { get; set; }
+        public required string Language { get; set; }
+        public required List<string> GenreNames { get; set; }
+
+        public int Year { get; set; }
+
+        public required string Director { get; set; }
+
+        public required IFormFile MovieCover { get; set; }
+
+        public required IFormFile MovieVideo { get; set; }
     }
 }

@@ -21,5 +21,10 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             return await _genre.FirstOrDefaultAsync(g => g.Name == Name);
         }
+
+        public IList<Genre> GetGenresByNames(IList<string> genreNames)
+        {
+            return _genre.Where(g => genreNames.Contains(g.Name)).ToList();
+        }
     }
 }

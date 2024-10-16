@@ -16,7 +16,7 @@ namespace MovieInfo.Api.Controllers
             _genreService = genreService;
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CreateGenreRequest request)
@@ -33,7 +33,7 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -53,7 +53,7 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -74,7 +74,7 @@ namespace MovieInfo.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

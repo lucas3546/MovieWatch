@@ -10,10 +10,8 @@ namespace MovieInfo.Domain.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
-
         public int SeasonId { get; set; }
         public Season Season { get; set; }
-
         public Media Media { get; set; }
     }
 }

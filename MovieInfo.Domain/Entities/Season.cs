@@ -10,6 +10,8 @@ namespace MovieInfo.Domain.Entities
     {
         public int Id { get; set; }
         public int SeasonNumber { get; set; }
+        public int SerieId { set; get; }
+        public Serie Serie { get; set; }
         public ICollection<Episode>? Episodes { get; set; }
     }
 }

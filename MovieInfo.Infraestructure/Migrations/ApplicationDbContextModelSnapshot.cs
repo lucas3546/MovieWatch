@@ -32,6 +32,21 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.ToTable("GenreMovie");
                 });
 
+            modelBuilder.Entity("GenreSerie", b =>
+                {
+                    b.Property<int>("GenresId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SerieId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("GenresId", "SerieId");
+
+                    b.HasIndex("SerieId");
+
+                    b.ToTable("GenreSerie");
+                });
+
             modelBuilder.Entity("MovieInfo.Domain.Entities.Episode", b =>
                 {
                     b.Property<int>("Id")
@@ -237,7 +252,12 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Property<int>("SeasonNumber")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SerieId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SerieId");
 
                     b.ToTable("Seasons");
                 });
@@ -252,9 +272,6 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -268,8 +285,6 @@ namespace MovieInfo.Infraestructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GenreId");
 
                     b.ToTable("Series");
                 });
@@ -303,32 +318,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(96),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(93),
+                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4179),
+                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4175),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(104),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(103),
+                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4187),
+                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4186),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(105),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(105),
+                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189),
+                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(107),
-                            StartDate = new DateTime(2024, 10, 15, 18, 16, 40, 875, DateTimeKind.Utc).AddTicks(107),
+                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191),
+                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191),
                             State = 1,
                             UserId = 4
                         });
@@ -414,6 +429,21 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GenreSerie", b =>
+                {
+                    b.HasOne("MovieInfo.Domain.Entities.Genre", null)
+                        .WithMany()
+                        .HasForeignKey("GenresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieInfo.Domain.Entities.Serie", null)
+                        .WithMany()
+                        .HasForeignKey("SerieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MovieInfo.Domain.Entities.Episode", b =>
                 {
                     b.HasOne("MovieInfo.Domain.Entities.FavList", null)
@@ -472,15 +502,15 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Navigation("MovieVideo");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Serie", b =>
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Season", b =>
                 {
-                    b.HasOne("MovieInfo.Domain.Entities.Genre", "Genre")
-                        .WithMany("Serie")
-                        .HasForeignKey("GenreId")
+                    b.HasOne("MovieInfo.Domain.Entities.Serie", "Serie")
+                        .WithMany("Seasons")
+                        .HasForeignKey("SerieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Genre");
+                    b.Navigation("Serie");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Subscription", b =>
@@ -516,11 +546,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Navigation("Movies");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.Genre", b =>
-                {
-                    b.Navigation("Serie");
-                });
-
             modelBuilder.Entity("MovieInfo.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
@@ -529,6 +554,11 @@ namespace MovieInfo.Infraestructure.Migrations
             modelBuilder.Entity("MovieInfo.Domain.Entities.Season", b =>
                 {
                     b.Navigation("Episodes");
+                });
+
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Serie", b =>
+                {
+                    b.Navigation("Seasons");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.User", b =>

@@ -8,26 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieInfo.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial1 : Migration
+    public partial class Initial_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Films",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Films", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Genres",
                 columns: table => new
@@ -55,39 +40,6 @@ namespace MovieInfo.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Seasons",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    SeasonNumber = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Seasons", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ratings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Value = table.Column<double>(type: "REAL", nullable: false),
-                    FilmId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ratings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ratings_Films_FilmId",
-                        column: x => x.FilmId,
-                        principalTable: "Films",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Series",
                 columns: table => new
                 {
@@ -96,18 +48,11 @@ namespace MovieInfo.Infraestructure.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Synopsis = table.Column<string>(type: "TEXT", nullable: false),
                     Director = table.Column<string>(type: "TEXT", nullable: false),
-                    Language = table.Column<string>(type: "TEXT", nullable: false),
-                    GenreId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Language = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Series", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Series_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,6 +64,7 @@ namespace MovieInfo.Infraestructure.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
+                    RefreshToken = table.Column<string>(type: "TEXT", nullable: true),
                     RoleId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -129,6 +75,50 @@ namespace MovieInfo.Infraestructure.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GenreSerie",
+                columns: table => new
+                {
+                    GenresId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SerieId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GenreSerie", x => new { x.GenresId, x.SerieId });
+                    table.ForeignKey(
+                        name: "FK_GenreSerie_Genres_GenresId",
+                        column: x => x.GenresId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GenreSerie_Series_SerieId",
+                        column: x => x.SerieId,
+                        principalTable: "Series",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Seasons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SeasonNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    SerieId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seasons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Seasons_Series_SerieId",
+                        column: x => x.SerieId,
+                        principalTable: "Series",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,6 +218,7 @@ namespace MovieInfo.Infraestructure.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Synopsis = table.Column<string>(type: "TEXT", nullable: false),
                     Director = table.Column<string>(type: "TEXT", nullable: false),
+                    Year = table.Column<int>(type: "INTEGER", nullable: false),
                     Language = table.Column<string>(type: "TEXT", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     MovieCoverId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -281,6 +272,19 @@ namespace MovieInfo.Infraestructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Genres",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Drama" },
+                    { 2, "Comedia" },
+                    { 3, "Aventura" },
+                    { 4, "Ciencia Ficción" },
+                    { 5, "Terror" },
+                    { 6, "Acción" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "RoleName" },
                 values: new object[,]
@@ -292,12 +296,13 @@ namespace MovieInfo.Infraestructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Name", "Password", "RoleId" },
+                columns: new[] { "Id", "Email", "Name", "Password", "RefreshToken", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, "administrador@gmail.com", "Administrador", "Administrador1", 3 },
-                    { 2, "empleado@gmail.com", "Empleado", "Empleado1", 2 },
-                    { 3, "usuario@gmail.com", "Usuario", "Usuario1", 1 }
+                    { 1, "administrador@gmail.com", "Administrador", "Administrador1", null, 3 },
+                    { 2, "empleado@gmail.com", "Empleado", "Empleado1", null, 2 },
+                    { 3, "usuario1@gmail.com", "Usuario1", "Usuario1", null, 1 },
+                    { 4, "usuario2@gmail.com", "Usuario2", "Usuario2", null, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -305,9 +310,10 @@ namespace MovieInfo.Infraestructure.Migrations
                 columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1632), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1629), 0, 1 },
-                    { 2, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1639), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1638), 0, 2 },
-                    { 3, new DateTime(2029, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640), new DateTime(2024, 10, 9, 22, 28, 55, 597, DateTimeKind.Utc).AddTicks(1640), 0, 3 }
+                    { 1, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4179), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4175), 0, 1 },
+                    { 2, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4187), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4186), 0, 2 },
+                    { 3, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189), 0, 3 },
+                    { 4, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191), 1, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -331,6 +337,11 @@ namespace MovieInfo.Infraestructure.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GenreSerie_SerieId",
+                table: "GenreSerie",
+                column: "SerieId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Media_EpisodeId",
                 table: "Media",
                 column: "EpisodeId",
@@ -352,14 +363,9 @@ namespace MovieInfo.Infraestructure.Migrations
                 column: "MovieVideoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_FilmId",
-                table: "Ratings",
-                column: "FilmId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Series_GenreId",
-                table: "Series",
-                column: "GenreId");
+                name: "IX_Seasons_SerieId",
+                table: "Seasons",
+                column: "SerieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_UserId",
@@ -380,19 +386,13 @@ namespace MovieInfo.Infraestructure.Migrations
                 name: "GenreMovie");
 
             migrationBuilder.DropTable(
-                name: "Ratings");
-
-            migrationBuilder.DropTable(
-                name: "Series");
+                name: "GenreSerie");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "Movies");
-
-            migrationBuilder.DropTable(
-                name: "Films");
 
             migrationBuilder.DropTable(
                 name: "Genres");
@@ -411,6 +411,9 @@ namespace MovieInfo.Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Series");
 
             migrationBuilder.DropTable(
                 name: "Roles");

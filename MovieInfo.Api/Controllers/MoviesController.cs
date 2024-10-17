@@ -17,6 +17,24 @@ namespace MovieInfo.Api.Controllers
             _movieService = movieService;
         }
 
+        [HttpGet("get-all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllMovies()
+        {
+            var result = await _movieService.GetAllMovies();
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                return BadRequest(error.Message);
+            }
+
+            return Ok(result.Value);
+
+        }
+
         [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,6 +74,8 @@ namespace MovieInfo.Api.Controllers
         }
 
         [HttpGet("GetByGenre/{genreName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMoviesByGenreName(string genreName)
         {
             var result = await _movieService.GetMoviesByGenreName(genreName);
@@ -69,6 +89,8 @@ namespace MovieInfo.Api.Controllers
 
             return Ok(result.Value);
         }
+
+
 
         [HttpPut("Update/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

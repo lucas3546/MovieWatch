@@ -13,6 +13,7 @@ namespace MovieInfo.Application.Common.Interfaces.Services
     {
         Task<Result<int>> CreateMovieAsync(CreateMovieRequest request);
         Task<Result<GetMovieByIdResponse>> GetMovieByIdAsync(int Id);
+        Task<Result<IEnumerable<GetAllMoviesResponse>>> GetAllMovies();
         Task<Result<IEnumerable<GetMoviesByGenreNameResponse>>> GetMoviesByGenreName(string genreName);
         Task<Result> UpdateMovieByIdAsync(int id, UpdateMovieByIdRequest request);
         Task<Result> DeleteMovieByIdAsync(int id);

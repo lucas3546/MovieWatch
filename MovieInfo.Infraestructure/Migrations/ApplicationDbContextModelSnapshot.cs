@@ -318,32 +318,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8188),
-                            StartDate = new DateTime(2024, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8184),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(306),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(302),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8195),
-                            StartDate = new DateTime(2024, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8195),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8197),
-                            StartDate = new DateTime(2024, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8197),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(319),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(318),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8199),
-                            StartDate = new DateTime(2024, 10, 17, 18, 40, 15, 208, DateTimeKind.Utc).AddTicks(8198),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(321),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(320),
                             State = 1,
                             UserId = 4
                         });

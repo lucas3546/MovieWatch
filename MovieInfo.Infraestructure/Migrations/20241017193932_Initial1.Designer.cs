@@ -11,8 +11,8 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241016192008_Initial_1")]
-    partial class Initial_1
+    [Migration("20241017193932_Initial1")]
+    partial class Initial1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -321,35 +321,56 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4179),
-                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4175),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(306),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(302),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4187),
-                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4186),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189),
-                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(319),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(318),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191),
-                            StartDate = new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191),
+                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(321),
+                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(320),
                             State = 1,
                             UserId = 4
                         });
+                });
+
+            modelBuilder.Entity("MovieInfo.Domain.Entities.SubscriptionPreference", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionPreferences");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.User", b =>

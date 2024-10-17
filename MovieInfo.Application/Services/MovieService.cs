@@ -28,6 +28,20 @@ namespace MovieInfo.Application.Services
             _genreRepository = genreRepository;
         }
 
+        public async Task<Result<IEnumerable<GetAllMoviesResponse>>> GetAllMovies()
+        {
+            var movies = await _movieRepository.GetAllMoviesWithMediaAndGenres();
+
+            if (movies == null) return Result.Fail("An error ocurred when trying to get all movies");
+
+            var response = movies.Select(o =>
+            new GetAllMoviesResponse(o.Id, o.Title,
+            new MediaModel(o.MovieCover.FileName, o.MovieCover.FileExtension, o.MovieCover.IsPublic),
+            o.Genres.Select(o => o.Name)));
+
+            return Result.Ok(response);
+        }
+
         public async Task<Result<int>> CreateMovieAsync(CreateMovieRequest request)
         {
             string movieCoverMediaType = MediaHelper.GetMediaType(request.MovieCover);
@@ -174,5 +188,7 @@ namespace MovieInfo.Application.Services
 
             return Result.Ok();
         }
+
+
     }
 }

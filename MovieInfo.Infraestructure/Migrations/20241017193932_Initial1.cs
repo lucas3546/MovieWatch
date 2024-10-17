@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieInfo.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_1 : Migration
+    public partial class Initial1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,6 +53,20 @@ namespace MovieInfo.Infraestructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Series", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubscriptionPreferences",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<decimal>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscriptionPreferences", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -310,10 +324,10 @@ namespace MovieInfo.Infraestructure.Migrations
                 columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4179), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4175), 0, 1 },
-                    { 2, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4187), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4186), 0, 2 },
-                    { 3, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4189), 0, 3 },
-                    { 4, new DateTime(2029, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191), new DateTime(2024, 10, 16, 19, 20, 7, 112, DateTimeKind.Utc).AddTicks(4191), 1, 4 }
+                    { 1, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(306), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(302), 0, 1 },
+                    { 2, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316), 0, 2 },
+                    { 3, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(319), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(318), 0, 3 },
+                    { 4, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(321), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(320), 1, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -387,6 +401,9 @@ namespace MovieInfo.Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "GenreSerie");
+
+            migrationBuilder.DropTable(
+                name: "SubscriptionPreferences");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");

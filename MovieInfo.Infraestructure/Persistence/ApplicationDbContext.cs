@@ -19,6 +19,7 @@ namespace MovieInfo.Infraestructure.Persistence
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<SubscriptionPreference> SubscriptionPreferences { get; set; }
         public DbSet<Serie> Series { get; set; }
         public DbSet<Media> Media { get; set; }
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MovieInfo.Application.Common.Interfaces.Repositories;
+using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Domain.Constants;
 using System;
 using System.Collections.Generic;

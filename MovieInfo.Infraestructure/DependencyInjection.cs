@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+        services.AddScoped<ISubscriptionPreferenceRepository, SubscriptionPreferenceRepository>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMercadoPagoService, MercadoPagoService>();

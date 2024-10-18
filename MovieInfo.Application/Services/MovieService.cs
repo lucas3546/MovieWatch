@@ -87,7 +87,7 @@ namespace MovieInfo.Application.Services
             MediaModel movieCover = new MediaModel(mov.MovieCover.FileName, mov.MovieCover.FileExtension, mov.MovieCover.IsPublic);
             MediaModel movieVideo = new MediaModel(mov.MovieVideo.FileName, mov.MovieVideo.FileExtension, mov.MovieVideo.IsPublic);
 
-            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration, mov.Year,mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
+            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration.ToString(), mov.Year,mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
 
             return Result.Ok(response);
         }
@@ -100,7 +100,7 @@ namespace MovieInfo.Application.Services
 
 
             var response = movies.Select(o =>
-            new GetMoviesByGenreNameResponse(o.Id, o.Title, o.Duration, o.Year, o.Synopsis, o.Language, o.Director,
+            new GetMoviesByGenreNameResponse(o.Id, o.Title, o.Duration.ToString(), o.Year, o.Synopsis, o.Language, o.Director,
             new MediaModel(o.MovieCover.FileName, o.MovieCover.FileExtension, o.MovieCover.IsPublic),
             new MediaModel(o.MovieVideo.FileName, o.MovieVideo.FileExtension, o.MovieVideo.IsPublic), 
             o.Genres.Select(o => o.Name)));

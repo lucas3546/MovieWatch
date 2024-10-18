@@ -4,6 +4,7 @@ using MovieInfo.Api.Extensions;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers
@@ -18,8 +19,8 @@ namespace MovieInfo.Api.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CreateGenreRequest request)
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> Create(CreateGenreRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
 
@@ -33,11 +34,11 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("get-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetAllGenreResponse>>> GetAll()
         {
             var result = await _genreService.GetAllGenreAsync();
 
@@ -53,12 +54,11 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPut("Update/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public async Task<IActionResult> UpdateGenreById(int id, UpdateGenreRequest request)
+        [HttpPut("update/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateGenreById(int id, UpdateGenreRequest request)
         {
             var mov = await _genreService.UpdateGenreByIdAsync(id, request);
 
@@ -71,15 +71,14 @@ namespace MovieInfo.Api.Controllers
                 return BadRequest(error.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
 
-        [HttpDelete("Delete/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public async Task<IActionResult> DeleteGenreById(int id)
+        [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> DeleteGenreById(int id)
         {
             var mov = await _genreService.DeleteGenreByIdAsync(id);
 
@@ -92,7 +91,7 @@ namespace MovieInfo.Api.Controllers
                 return BadRequest(error.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -59,7 +59,7 @@ public static class DependencyInjection
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.WithOrigins("http://localhost:5173") //TO DO: Configure this port
+                builder.WithOrigins("http://localhost:3000","http://localhost:3001", "https://localhost:3000") 
                        .AllowAnyHeader()
                        .AllowAnyMethod()
                        .AllowCredentials(); 

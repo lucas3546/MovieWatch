@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieInfo.Api.Extensions;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers
@@ -19,8 +20,8 @@ namespace MovieInfo.Api.Controllers
 
         [HttpGet("get-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAllMovies()
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetAllMoviesResponse>>> GetAllMovies()
         {
             var result = await _movieService.GetAllMovies();
 
@@ -35,11 +36,12 @@ namespace MovieInfo.Api.Controllers
 
         }
 
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        public async Task<IActionResult> Create([FromForm] CreateMovieRequest request)
+        public async Task<ActionResult<int>> Create([FromForm] CreateMovieRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
 
@@ -53,11 +55,11 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("Get/{id}")]
+        [HttpGet("get/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById(int id)
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<GetMovieByIdResponse>> GetById(int id)
         {
             var result = await _movieService.GetMovieByIdAsync(id);
 
@@ -73,10 +75,10 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("GetByGenre/{genreName}")]
+        [HttpGet("get-movies-by-genre/{genreName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetMoviesByGenreName(string genreName)
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetMoviesByGenreNameResponse>>> GetMoviesByGenreName(string genreName)
         {
             var result = await _movieService.GetMoviesByGenreName(genreName);
 
@@ -92,11 +94,11 @@ namespace MovieInfo.Api.Controllers
 
 
 
-        [HttpPut("Update/{id}")]
+        [HttpPut("update/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateMovieById(int id, [FromForm] UpdateMovieByIdRequest request)
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateMovieById(int id, [FromForm] UpdateMovieByIdRequest request)
         {
             var mov = await _movieService.UpdateMovieByIdAsync(id, request);
 
@@ -112,11 +114,11 @@ namespace MovieInfo.Api.Controllers
             return NoContent();
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteMovieById(int id)
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> DeleteMovieById(int id)
         {
             var mov = await _movieService.DeleteMovieByIdAsync(id);
 

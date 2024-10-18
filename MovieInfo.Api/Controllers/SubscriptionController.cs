@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers;
@@ -14,11 +15,11 @@ public class SubscriptionController : ApiControllerBase
         _subscriptionService = subscriptionService;
     }
 
-    [HttpPost("add-from-payment")]
+    [HttpPost("add-to-user-from-payment")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CheckPaymentAndCreateSubscriptionForUser([FromBody] long PaymentId)
+    [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> CheckPaymentAndCreateSubscriptionForUser([FromBody] long PaymentId)
     {
         var result = await _subscriptionService.AddSubscriptionToUserFromPayment(PaymentId);
 
@@ -37,7 +38,7 @@ public class SubscriptionController : ApiControllerBase
     [HttpPost("create-preference")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateSubscriptionPreference(CreateSubscriptionPreferenceRequest request)
+    public async Task<ActionResult<string>> CreateSubscriptionPreference(CreateSubscriptionPreferenceRequest request)
     {
         var result = await _subscriptionService.CreateSubscriptionPreference(request);
 
@@ -54,8 +55,8 @@ public class SubscriptionController : ApiControllerBase
 
     [HttpGet("get-actual-preference")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetSubscriptionPreference()
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<GetSubscriptionPreferenceResponse>> GetSubscriptionPreference()
     {
         var result = await _subscriptionService.GetSubscriptionPreference();
         if (result.IsFailed)
@@ -69,8 +70,8 @@ public class SubscriptionController : ApiControllerBase
 
     [HttpPut("update-actual-preference")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateSubscriptionPreference(UpdateSubscriptionPreferenceRequest request)
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateSubscriptionPreference(UpdateSubscriptionPreferenceRequest request)
     {
         var result = await _subscriptionService.UpdateSubscriptionPreference(request);
         if (result.IsFailed)
@@ -84,8 +85,8 @@ public class SubscriptionController : ApiControllerBase
 
     [HttpDelete("remove-actual-preference")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RemoveActualSubscriptionPreference()
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> RemoveActualSubscriptionPreference()
     {
         var result = await _subscriptionService.RemoveActualSubscription();
         if (result.IsFailed)

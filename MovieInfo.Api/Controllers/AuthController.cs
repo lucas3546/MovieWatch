@@ -21,7 +21,7 @@ public class AuthController : ApiControllerBase
 
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterUserRequest request)
     {
         var result = await _authService.RegisterAsync(request);
@@ -36,9 +36,10 @@ public class AuthController : ApiControllerBase
 
     [HttpPost("Login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Authenticate(AuthenticateRequest authenticateRequest) 
+    [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]   
+    public async Task<ActionResult<string>> Authenticate(AuthenticateRequest authenticateRequest) 
     {
         var result = await _authService.Authenticate(authenticateRequest); 
 
@@ -60,10 +61,11 @@ public class AuthController : ApiControllerBase
 
     [HttpGet("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize]
-    public async Task<IActionResult> Refresh()
+    public async Task<ActionResult<string>> Refresh()
     {
         if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken)) return BadRequest("You don't have a refresh token in the cookie!");
 

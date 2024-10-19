@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Requests
 {
-    public class UpdateMovieByIdRequest
+    public record UpdateMovieByIdRequest
     {
-        [MaxLength(30)]
+        [MinLength(5), MaxLength(30)]
         public required string Title { get; set; }
         [Range(0.25, 4)]
         public required double Duration { get; set; }
-        [MaxLength(100)]
+        [MinLength(5), MaxLength(255)]
         public required string Synopsis { get; set; }
-        [MaxLength(20)]
+        [MinLength(4), MaxLength(50)]
         public required string Language { get; set; }
         public required List<string> GenreNames { get; set; }
-
+        [Range(1900, 2024)]
         public int Year { get; set; }
-
+        [MinLength(4), MaxLength(50)]
         public required string Director { get; set; }
 
         public required IFormFile MovieCover { get; set; }

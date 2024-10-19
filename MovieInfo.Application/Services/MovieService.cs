@@ -45,10 +45,10 @@ namespace MovieInfo.Application.Services
         public async Task<Result<int>> CreateMovieAsync(CreateMovieRequest request)
         {
             string movieCoverMediaType = MediaHelper.GetMediaType(request.MovieCover);
-            if (!movieCoverMediaType.Equals("image") || movieCoverMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only images are allowed."));
+            if (!movieCoverMediaType.Equals("image") || movieCoverMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only images are allowed in MovieCover."));
 
             string movieVideoMediaType = MediaHelper.GetMediaType(request.MovieVideo);
-            if (!movieVideoMediaType.Equals("video") || movieVideoMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only videos are allowed."));
+            if (!movieVideoMediaType.Equals("video") || movieVideoMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only videos are allowed in MovieVideo."));
 
             Media movieCover;
             Media movieVideo;
@@ -82,7 +82,7 @@ namespace MovieInfo.Application.Services
         {
             var mov = await _movieRepository.GetMovieByIdWithGenreAndMedia(Id);
 
-            if (mov == null) return Result.Fail(new NotFoundError($"Film with id {Id} not found"));
+            if (mov == null) return Result.Fail(new NotFoundError($"Movie with id {Id} not found"));
 
             MediaModel movieCover = new MediaModel(mov.MovieCover.FileName, mov.MovieCover.FileExtension, mov.MovieCover.IsPublic);
             MediaModel movieVideo = new MediaModel(mov.MovieVideo.FileName, mov.MovieVideo.FileExtension, mov.MovieVideo.IsPublic);
@@ -112,7 +112,7 @@ namespace MovieInfo.Application.Services
         {
             var movie = await _movieRepository.GetMovieByIdWithGenreAndMedia(id);
 
-            if (movie == null) return Result.Fail(new NotFoundError($"Film with id {id} not found"));
+            if (movie == null) return Result.Fail(new NotFoundError($"Movie with id {id} not found"));
 
             Media movieCover;
             Media movieVideo;

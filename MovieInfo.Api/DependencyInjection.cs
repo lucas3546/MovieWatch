@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using MovieInfo.Api.Infraestructure;
 using MovieInfo.Api.Services;
 using MovieInfo.Domain.Interfaces;
 
@@ -9,7 +11,17 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers().ConfigureApiBehaviorOptions(options =>
+        {
+            options.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState.SelectMany(e => e.Value.Errors.Select(o => o.ErrorMessage));
+
+
+                return new BadRequestObjectResult(new ApiErrorResponse("ValidationError", errors));
+            };
+        }); 
+
         services.AddEndpointsApiExplorer();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();

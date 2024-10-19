@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MovieInfo.Api.Infraestructure;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
 using MovieInfo.Domain.Errors;
@@ -21,14 +22,16 @@ public class AuthController : ApiControllerBase
 
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterUserRequest request)
     {
         var result = await _authService.RegisterAsync(request);
 
         if (result.IsFailed)
         {
-            return BadRequest(result.Errors);
+            var error = result.Errors.First();
+
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
         return Ok(result.Value);
@@ -36,9 +39,8 @@ public class AuthController : ApiControllerBase
 
     [HttpPost("Login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]   
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Authenticate(AuthenticateRequest authenticateRequest) 
     {
         var result = await _authService.Authenticate(authenticateRequest); 
@@ -47,11 +49,11 @@ public class AuthController : ApiControllerBase
         {
             var error = result.Errors.First();
 
-            if (error is NotFoundError) return NotFound(error.Message);
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
-            if (error is AccessForbiddenError) return Forbid(error.Message);
+            if (error is AccessForbiddenError) return BadRequest(new ApiErrorResponse("AuthenticationFailed", error.Message));
 
-            return BadRequest(result.Errors);
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
         Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
@@ -61,8 +63,9 @@ public class AuthController : ApiControllerBase
 
     [HttpGet("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize]
     public async Task<ActionResult<string>> Refresh()
@@ -78,11 +81,11 @@ public class AuthController : ApiControllerBase
         {
             var error = result.Errors.First();
 
-            if (error is NotFoundError) return NotFound(error.Message);
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
             if (error is AccessForbiddenError) return Forbid(error.Message);
 
-            return BadRequest(result.Errors);
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
         Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });

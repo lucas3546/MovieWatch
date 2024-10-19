@@ -58,7 +58,15 @@ public class SubscriptionService :  ISubscriptionService
         var actualPref = await _subscriptionPreferenceRepository.GetAllAsync();
         if (actualPref.Count > 0) return Result.Fail("The system only can have a one subscription preference");
 
-        var preferenceId = await _mercadoPagoService.CreatePreference(request.Title, request.Description, request.Price);
+        string preferenceId;
+        try
+        {
+            preferenceId = await _mercadoPagoService.CreatePreference(request.Title, request.Description, request.Price);
+        }
+        catch(Exception ex)
+        {
+            return Result.Fail($"An error has ocurred with Mercado Pago API: {ex.Message}");
+        }
 
         var subPref = new SubscriptionPreference(preferenceId, request.Title, request.Description, request.Price);
 

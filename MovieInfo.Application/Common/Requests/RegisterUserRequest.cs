@@ -9,10 +9,9 @@ namespace MovieInfo.Application.Common.Requests;
 
 public record RegisterUserRequest
 {
-    [MaxLength(30)]
+    [MinLength(4), MaxLength(50)]
     public required string UserName { get; set; }
-    [MaxLength(30)]
-    [MinLength(5)]
+    [MinLength(4), MaxLength(50)]
     public required string Password { get; set; }
     [EmailAddress]
     public required string Email { get; set; }

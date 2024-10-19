@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MovieInfo.Api.Infraestructure;
 using MovieInfo.Domain.Constants;
 using System.Net;
 
@@ -13,6 +14,7 @@ public class MediaController : ApiControllerBase
 
 
     [HttpGet("public/{fileName}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileStreamResult))]
     public IActionResult GetPublicFile(string fileName)
     {
@@ -20,6 +22,10 @@ public class MediaController : ApiControllerBase
     }
 
     [HttpGet("protected/{fileName}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileStreamResult))]
     [Authorize(Policy = "SubscriptionActivePolicy")]
     public IActionResult GetProtectedFile(string fileName)
     {

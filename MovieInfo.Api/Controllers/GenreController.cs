@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using MovieInfo.Api.Extensions;
+using MovieInfo.Api.Infraestructure;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
@@ -19,16 +22,17 @@ namespace MovieInfo.Api.Controllers
 
         [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult<int>> Create(CreateGenreRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState.GetAllErrors());
-
             var result = await _genreService.CreateGenreAsync(request);
 
             if (result.IsFailed)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
             }
 
             return Ok(result.Value);
@@ -36,8 +40,8 @@ namespace MovieInfo.Api.Controllers
 
         [HttpGet("get-all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<GetAllGenreResponse>>> GetAll()
         {
             var result = await _genreService.GetAllGenreAsync();
@@ -46,9 +50,9 @@ namespace MovieInfo.Api.Controllers
             {
                 var error = result.Errors.First();
 
-                if (error is NotFoundError) return NotFound(error.Message);
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
-                return BadRequest(error.Message);
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
             }
 
             return Ok(result.Value);
@@ -56,8 +60,11 @@ namespace MovieInfo.Api.Controllers
 
         [HttpPut("update/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult> UpdateGenreById(int id, UpdateGenreRequest request)
         {
             var mov = await _genreService.UpdateGenreByIdAsync(id, request);
@@ -66,9 +73,9 @@ namespace MovieInfo.Api.Controllers
             {
                 var error = mov.Errors.First();
 
-                if (error is NotFoundError) return NotFound(error.Message);
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
-                return BadRequest(error.Message);
+                return BadRequest(new ApiErrorResponse("Errors", mov.Errors));
             }
 
             return NoContent();
@@ -76,8 +83,11 @@ namespace MovieInfo.Api.Controllers
 
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult> DeleteGenreById(int id)
         {
             var mov = await _genreService.DeleteGenreByIdAsync(id);
@@ -86,9 +96,9 @@ namespace MovieInfo.Api.Controllers
             {
                 var error = mov.Errors.First();
 
-                if (error is NotFoundError) return NotFound(error.Message);
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
-                return BadRequest(error.Message);
+                return BadRequest(new ApiErrorResponse("Errors", mov.Errors));
             }
 
             return NoContent();

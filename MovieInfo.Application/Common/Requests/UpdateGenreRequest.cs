@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Requests
 {
-    public class UpdateGenreRequest
+    public record UpdateGenreRequest
     {
-        [MaxLength(30)]
+        [MinLength(4), MaxLength(30)]
         public required string Name { get; set; }
 
     }

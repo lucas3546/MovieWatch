@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Requests
 {
-    public class AuthenticateRequest
+    public record AuthenticateRequest
     {
-        //[MinLength(3), MaxLength(15)]
-        public string Email { get; set; }
-        //[MinLength(8), MaxLength(16)]
-        public string Password { get; set; }
+        [EmailAddress]
+        public required string Email { get; set; }
+        [MinLength(4), MaxLength(50)]
+        public required string Password { get; set; }
     }
 }

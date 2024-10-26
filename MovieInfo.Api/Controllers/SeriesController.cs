@@ -117,5 +117,67 @@ namespace MovieInfo.Api.Controllers
 
             return Ok(result.Value);
         }
+        [HttpPost("add-season")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> CreateSeasonAsync(CreateSeasonRequest request)
+        {
+            var result = await _seriesService.AddSeasonToSeriesAsync(request);
+
+            if (result.IsFailed)
+            {
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("get-seasons-from-serie/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<GetSeasonsFromSerieResponse>>> GetAllSeasonsFromSerie(int id)
+        {
+            var result = await _seriesService.GetSeasonsFromSerieAsync(id);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
+
+
+        [HttpDelete("delete-season-from-serie")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> DeleteSeasonFromSerieAsync([FromQuery]int idSerie,[FromQuery] int seasonNumber)
+        {
+            var season = await _seriesService.DeleteSeasonToSerieAsync(idSerie, seasonNumber);
+
+            if (season.IsFailed)
+            {
+                var error = season.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", season.Errors));
+            }
+
+            return NoContent();
+        }
+
     }
 }

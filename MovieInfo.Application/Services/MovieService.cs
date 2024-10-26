@@ -63,11 +63,22 @@ namespace MovieInfo.Application.Services
 
             if (genres is null) return Result.Fail(new NotFoundError($"Genres not found"));
 
-            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, ShowCaseImageUrl = request.ShowCaseImageUrl,MovieCoverUrl = request.MovieCoverUrl, MovieVideo = movieVideo,Genres = genres};
+            var mov = new Movie { Title = request.Title, Duration = TimeSpan.Parse(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, ShowCaseImageUrl = request.ShowCaseImageUrl,MovieCoverUrl = request.MovieCoverUrl, MovieVideo = movieVideo,Genres = genres};
 
             await _movieRepository.AddAsync(mov);
 
             return Result.Ok(mov.Id);
+        }
+
+        public async Task<Result<IEnumerable<GetMoviesWithShowcaseImage>>> GetMoviesWithShowcaseImage()
+        {
+            var movies = await _movieRepository.GetMoviesWithShowcaseImage();
+            if (movies == null) return Result.Fail("An error ocurred when trying to get all movies with Showcase Image");
+
+            var response = movies.Select(o => new GetMoviesWithShowcaseImage(o.Id, o.Title, o.Year,o.Synopsis, o.ShowCaseImageUrl));
+
+            return Result.Ok(response);
+
         }
 
         public async Task<Result<GetMovieByIdResponse>> GetMovieByIdAsync(int Id)
@@ -133,7 +144,7 @@ namespace MovieInfo.Application.Services
             if (genres.Count == 0) return Result.Fail(new NotFoundError("Genres not found"));
 
             movie.Title = request.Title;
-            movie.Duration = TimeSpan.FromHours(request.Duration);
+            movie.Duration = TimeSpan.Parse(request.Duration);
             movie.Synopsis = request.Synopsis;
             movie.Language = request.Language;
             movie.Director = request.Director;

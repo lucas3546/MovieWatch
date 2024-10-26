@@ -35,6 +35,22 @@ namespace MovieInfo.Api.Controllers
 
         }
 
+        [HttpGet("with-showcase-images")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetMoviesWithShowcaseImage>>> GetMoviesWithShowCaseImages()
+        {
+            var result = await _movieService.GetMoviesWithShowcaseImage();
+
+            if (result.IsFailed)
+            {
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+
+        }
+
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]

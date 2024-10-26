@@ -28,6 +28,11 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         }
 
+        public async Task<IEnumerable<Movie>?> GetMoviesWithShowcaseImage()
+        {
+            return await _movies.Where(o => !string.IsNullOrEmpty(o.ShowCaseImageUrl)).ToListAsync();
+        }
+
         public async Task<IEnumerable<Movie>?> GetAllMoviesWithMediaAndGenres()
         {
             return await _movies.Include(o => o.Genres).ToListAsync();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MovieInfo.Application.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,8 @@ namespace MovieInfo.Application.Common.Requests
     {
         [MinLength(5),MaxLength(30)]
         public required string Title { get; set; }
-        [Range(0.25, 4)]
-        public required double Duration { get; set; }
+        [RegularExpression(@"^([0-1]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$", ErrorMessage = "Duration must be in the format hh:mm:ss")]
+        public required string Duration { get; set; }
         [MinLength(5),MaxLength(255)]
         public required string Synopsis { get; set; }
         [MinLength(4), MaxLength(50)]

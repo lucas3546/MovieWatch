@@ -13,7 +13,8 @@ namespace MovieInfo.Domain.Entities
         public string Synopsis { get; set; }
         public string Director { get; set; }
         public string Language { get; set; }
-        public List<Genre> Genres { get; set; }
+        public IList<Genre> Genres { get; set; }
         public ICollection<Season>? Seasons { get; set; }
+        public string SerieCoverUrl { get; set; }
     }
 }

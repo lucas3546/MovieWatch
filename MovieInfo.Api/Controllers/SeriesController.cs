@@ -1,83 +1,121 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MovieInfo.Api.Infraestructure;
+using MovieInfo.Application.Common.Interfaces.Services;
+using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
+using MovieInfo.Application.Services;
+using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers
 {
-    public class SeriesController : Controller
+    public class SeriesController : ApiControllerBase
     {
-        // GET: SeriesController
-        public ActionResult Index()
+        private readonly ISeriesService _seriesService;
+        public SeriesController(ISeriesService seriesService)
         {
-            return View();
+            _seriesService = seriesService;
         }
 
-        // GET: SeriesController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("get/{Id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<GetSerieByIdResponse>> GetSerieByIdAsync(int Id)
         {
-            return View();
-        }
+            var result = await _seriesService.GetSerieByIdAsync(Id);
 
-        // GET: SeriesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: SeriesController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (result.IsFailed)
             {
-                return RedirectToAction(nameof(Index));
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
             }
-            catch
-            {
-                return View();
-            }
+
+            return Ok(result.Value);
         }
 
-        // GET: SeriesController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult<int>> CreateSerieAsync([FromForm]CreateSerieRequest request)
         {
-            return View();
+            var result = await _seriesService.CreateSerieAsync(request);
+
+            if (result.IsFailed)
+            {
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
         }
 
-        // POST: SeriesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPut("update/{Id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> UpdateSerieAsync(int Id, [FromForm] UpdateSerieRequest request)
         {
-            try
+            var ser = await _seriesService.UpdateSerieAsync(Id, request);
+
+            if (ser.IsFailed)
             {
-                return RedirectToAction(nameof(Index));
+                var error = ser.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", ser.Errors));
             }
-            catch
-            {
-                return View();
-            }
+
+            return NoContent();
         }
 
-        // GET: SeriesController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpDelete("delete/{Id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> DeleteSerieAsync(int Id)
         {
-            return View();
+            var ser = await _seriesService.DeleteSerieAsync(Id);
+
+            if (ser.IsFailed)
+            {
+                var error = ser.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", ser.Errors));
+            }
+
+            return NoContent();
         }
 
-        // POST: SeriesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpGet("get-all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetAllSerieResponse>>> GetAllSerieAsync()
         {
-            try
+            var result = await _seriesService.GetAllSerieAsync();
+
+            if (result.IsFailed)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
             }
-            catch
-            {
-                return View();
-            }
+
+            return Ok(result.Value);
         }
     }
 }

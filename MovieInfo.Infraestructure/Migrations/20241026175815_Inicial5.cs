@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieInfo.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial1 : Migration
+    public partial class Inicial5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,8 @@ namespace MovieInfo.Infraestructure.Migrations
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Synopsis = table.Column<string>(type: "TEXT", nullable: false),
                     Director = table.Column<string>(type: "TEXT", nullable: false),
-                    Language = table.Column<string>(type: "TEXT", nullable: false)
+                    Language = table.Column<string>(type: "TEXT", nullable: false),
+                    SerieCoverUrl = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -319,10 +320,10 @@ namespace MovieInfo.Infraestructure.Migrations
                 columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3505), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3502), 0, 1 },
-                    { 2, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513), 0, 2 },
-                    { 3, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515), 0, 3 },
-                    { 4, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516), 1, 4 }
+                    { 1, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9986), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9982), 0, 1 },
+                    { 2, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9994), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9993), 0, 2 },
+                    { 3, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9998), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9997), 0, 3 },
+                    { 4, new DateTime(2029, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc), new DateTime(2024, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc), 1, 4 }
                 });
 
             migrationBuilder.CreateIndex(

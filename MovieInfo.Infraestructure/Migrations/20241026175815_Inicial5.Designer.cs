@@ -11,8 +11,8 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241026141533_Initial1")]
-    partial class Initial1
+    [Migration("20241026175815_Inicial5")]
+    partial class Inicial5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,6 +281,10 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("SerieCoverUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Synopsis")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -323,32 +327,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3505),
-                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3502),
+                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9986),
+                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9982),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513),
-                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513),
+                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9994),
+                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9993),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515),
-                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515),
+                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9998),
+                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9997),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516),
-                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516),
+                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc),
+                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc),
                             State = 1,
                             UserId = 4
                         });

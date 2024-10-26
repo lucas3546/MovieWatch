@@ -35,8 +35,7 @@ namespace MovieInfo.Application.Services
             if (movies == null) return Result.Fail("An error ocurred when trying to get all movies");
 
             var response = movies.Select(o =>
-            new GetAllMoviesResponse(o.Id, o.Title,
-            new MediaModel(o.MovieCover.FileName, o.MovieCover.FileExtension, o.MovieCover.IsPublic),
+            new GetAllMoviesResponse(o.Id, o.Title, o.MovieCoverUrl,
             o.Genres.Select(o => o.Name)));
 
             return Result.Ok(response);
@@ -44,21 +43,14 @@ namespace MovieInfo.Application.Services
 
         public async Task<Result<int>> CreateMovieAsync(CreateMovieRequest request)
         {
-            string movieCoverMediaType = MediaHelper.GetMediaType(request.MovieCover);
-            if (!movieCoverMediaType.Equals("image") || movieCoverMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only images are allowed in MovieCover."));
 
             string movieVideoMediaType = MediaHelper.GetMediaType(request.MovieVideo);
             if (!movieVideoMediaType.Equals("video") || movieVideoMediaType.Equals("unknow")) return Result.Fail(new UnsupportedMediaTypeError($"Only videos are allowed in MovieVideo."));
 
-            Media movieCover;
             Media movieVideo;
 
             try
             {
-                var (coverFileName, coverFileType, isCoverPublic) = await _fileService.SaveFileAsync(request.MovieCover, true);
-                movieCover = new Media(coverFileName, coverFileType, isCoverPublic);
-
-
                 var (videoFileName, videoFileType, isVideoPublic) = await _fileService.SaveFileAsync(request.MovieVideo, false);
                 movieVideo = new Media(videoFileName, videoFileType, isVideoPublic);
             }
@@ -71,7 +63,7 @@ namespace MovieInfo.Application.Services
 
             if (genres is null) return Result.Fail(new NotFoundError($"Genres not found"));
 
-            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, MovieCover = movieCover, MovieVideo = movieVideo,Genres = genres};
+            var mov = new Movie { Title = request.Title, Duration = TimeSpan.FromHours(request.Duration), Year = request.Year, Director = request.Director, Synopsis = request.Synopsis, Language = request.Language, ShowCaseImageUrl = request.ShowCaseImageUrl,MovieCoverUrl = request.MovieCoverUrl, MovieVideo = movieVideo,Genres = genres};
 
             await _movieRepository.AddAsync(mov);
 
@@ -84,10 +76,9 @@ namespace MovieInfo.Application.Services
 
             if (mov == null) return Result.Fail(new NotFoundError($"Movie with id {Id} not found"));
 
-            MediaModel movieCover = new MediaModel(mov.MovieCover.FileName, mov.MovieCover.FileExtension, mov.MovieCover.IsPublic);
             MediaModel movieVideo = new MediaModel(mov.MovieVideo.FileName, mov.MovieVideo.FileExtension, mov.MovieVideo.IsPublic);
 
-            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration.ToString(), mov.Year,mov.Synopsis, mov.Language, mov.Director, movieCover, movieVideo, mov.Genres.Select(o => o.Name));
+            var response = new GetMovieByIdResponse(mov.Id, mov.Title, mov.Duration.ToString(), mov.Year,mov.Synopsis, mov.Language, mov.Director, mov.ShowCaseImageUrl, mov.MovieCoverUrl, movieVideo, mov.Genres.Select(o => o.Name));
 
             return Result.Ok(response);
         }
@@ -100,8 +91,7 @@ namespace MovieInfo.Application.Services
 
 
             var response = movies.Select(o =>
-            new GetMoviesByGenreNameResponse(o.Id, o.Title, o.Duration.ToString(), o.Year, o.Synopsis, o.Language, o.Director,
-            new MediaModel(o.MovieCover.FileName, o.MovieCover.FileExtension, o.MovieCover.IsPublic),
+            new GetMoviesByGenreNameResponse(o.Id, o.Title, o.Duration.ToString(), o.Year, o.Synopsis, o.Language, o.Director, o.ShowCaseImageUrl,o.MovieCoverUrl,
             new MediaModel(o.MovieVideo.FileName, o.MovieVideo.FileExtension, o.MovieVideo.IsPublic), 
             o.Genres.Select(o => o.Name)));
 
@@ -114,16 +104,14 @@ namespace MovieInfo.Application.Services
 
             if (movie == null) return Result.Fail(new NotFoundError($"Movie with id {id} not found"));
 
-            Media movieCover;
             Media movieVideo;
 
             try
             {
-                bool deleteMovieCoverResult = _fileService.DeleteFile(movie.MovieCover.FileName, movie.MovieCover.IsPublic);
                 bool deleteMovieVideoResult = _fileService.DeleteFile(movie.MovieVideo.FileName, movie.MovieVideo.IsPublic);
-                if (deleteMovieCoverResult is false || deleteMovieVideoResult is false)
+                if (deleteMovieVideoResult is false)
                 {
-                    return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
+                    return Result.Fail("There are an error when deleting the Movie Video, they may not be found in the file system");
                 }
             }
             catch(Exception ex)
@@ -133,11 +121,6 @@ namespace MovieInfo.Application.Services
 
             try
             {
-
-                var (coverFileName, coverFileType, isCoverPublic) = await _fileService.SaveFileAsync(request.MovieCover, true);
-                movieCover = new Media(coverFileName, coverFileType, isCoverPublic);
-
-
                 var (videoFileName, videoFileType, isVideoPublic) = await _fileService.SaveFileAsync(request.MovieVideo, false);
                 movieVideo = new Media(videoFileName, videoFileType, isVideoPublic);
             }
@@ -156,7 +139,8 @@ namespace MovieInfo.Application.Services
             movie.Director = request.Director;
             movie.Year = request.Year;
             movie.Genres = genres;
-            movie.MovieCover = movieCover;
+            movie.ShowCaseImageUrl = request.ShowCaseImageUrl;
+            movie.MovieCoverUrl = request.MovieCoverUrl;
             movie.MovieVideo = movieVideo;
 
             await _movieRepository.UpdateAsync(movie);
@@ -174,9 +158,8 @@ namespace MovieInfo.Application.Services
 
             try
             {
-                bool deleteMovieCoverResult = _fileService.DeleteFile(movie.MovieCover.FileName, movie.MovieCover.IsPublic);
                 bool deleteMovieVideoResult = _fileService.DeleteFile(movie.MovieVideo.FileName, movie.MovieVideo.IsPublic);
-                if(deleteMovieCoverResult is false || deleteMovieVideoResult is false)
+                if(deleteMovieVideoResult is false)
                 {
                     return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
                 }

@@ -235,7 +235,8 @@ namespace MovieInfo.Infraestructure.Migrations
                     Year = table.Column<int>(type: "INTEGER", nullable: false),
                     Language = table.Column<string>(type: "TEXT", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
-                    MovieCoverId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShowCaseImageUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    MovieCoverUrl = table.Column<string>(type: "TEXT", nullable: false),
                     MovieVideoId = table.Column<int>(type: "INTEGER", nullable: false),
                     FavListId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -247,12 +248,6 @@ namespace MovieInfo.Infraestructure.Migrations
                         column: x => x.FavListId,
                         principalTable: "FavLists",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Movies_Media_MovieCoverId",
-                        column: x => x.MovieCoverId,
-                        principalTable: "Media",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Movies_Media_MovieVideoId",
                         column: x => x.MovieVideoId,
@@ -324,10 +319,10 @@ namespace MovieInfo.Infraestructure.Migrations
                 columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(306), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(302), 0, 1 },
-                    { 2, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316), 0, 2 },
-                    { 3, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(319), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(318), 0, 3 },
-                    { 4, new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(321), new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(320), 1, 4 }
+                    { 1, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3505), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3502), 0, 1 },
+                    { 2, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513), 0, 2 },
+                    { 3, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515), 0, 3 },
+                    { 4, new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516), new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516), 1, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -365,11 +360,6 @@ namespace MovieInfo.Infraestructure.Migrations
                 name: "IX_Movies_FavListId",
                 table: "Movies",
                 column: "FavListId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Movies_MovieCoverId",
-                table: "Movies",
-                column: "MovieCoverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Movies_MovieVideoId",

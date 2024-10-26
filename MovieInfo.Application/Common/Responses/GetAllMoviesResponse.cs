@@ -6,4 +6,4 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Responses;
-public record GetAllMoviesResponse(int Id, string Title, MediaModel MovieCover, IEnumerable<string> Genres);
+public record GetAllMoviesResponse(int Id, string Title, string MovieCoverUrl, IEnumerable<string> Genres);

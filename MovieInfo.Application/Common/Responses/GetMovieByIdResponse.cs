@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Responses
 {
-    public record GetMovieByIdResponse(int Id, string Title, string Duration, int Year, string Synopsis, string Language, string Director, MediaModel movieCover, MediaModel movieVideo,IEnumerable<string> Genres, int Type = 0);
+    public record GetMovieByIdResponse(int Id, string Title, string Duration, int Year, string Synopsis, string Language, string Director, string? showCaseImageUrl,string movieCoverUrl, MediaModel movieVideo,IEnumerable<string> Genres, int Type = 0);
 }

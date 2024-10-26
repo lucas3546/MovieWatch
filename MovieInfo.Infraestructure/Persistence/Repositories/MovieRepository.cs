@@ -19,18 +19,18 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         public async Task<Movie?> GetMovieByIdWithGenreAndMedia(int id)
         {
-            return await _movies.Include(o => o.Genres).Include(o => o.MovieVideo).Include(o => o.MovieCover).FirstOrDefaultAsync(o => o.Id == id);
+            return await _movies.Include(o => o.Genres).Include(o => o.MovieVideo).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<IEnumerable<Movie>?> GetMoviesByGenreName(string genreName)
         {
-            return await _movies.Include(o => o.Genres).Include(o => o.MovieCover).Include(o => o.MovieVideo).Where(m => m.Genres.Any(g => g.Name == genreName)).ToListAsync();
+            return await _movies.Include(o => o.Genres).Include(o => o.MovieVideo).Where(m => m.Genres.Any(g => g.Name == genreName)).ToListAsync();
 
         }
 
         public async Task<IEnumerable<Movie>?> GetAllMoviesWithMediaAndGenres()
         {
-            return await _movies.Include(o => o.Genres).Include(o => o.MovieCover).ToListAsync();
+            return await _movies.Include(o => o.Genres).ToListAsync();
         }
     }
 }

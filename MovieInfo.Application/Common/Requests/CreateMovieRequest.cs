@@ -23,8 +23,10 @@ namespace MovieInfo.Application.Common.Requests
         public int Year { get; set; }
         [MinLength(4), MaxLength(50)]
         public required string Director { get; set; }
-
-        public required IFormFile MovieCover {  get; set; }
+        [Url]
+        public string? ShowCaseImageUrl { get; set; }
+        [Url]
+        public required string MovieCoverUrl {  get; set; }
 
         public required IFormFile MovieVideo { get; set; }
     }

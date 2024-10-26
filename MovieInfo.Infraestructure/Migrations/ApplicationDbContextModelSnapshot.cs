@@ -183,11 +183,15 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MovieCoverId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MovieCoverUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("MovieVideoId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShowCaseImageUrl")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Synopsis")
                         .IsRequired()
@@ -203,8 +207,6 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FavListId");
-
-                    b.HasIndex("MovieCoverId");
 
                     b.HasIndex("MovieVideoId");
 
@@ -318,32 +320,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(306),
-                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(302),
+                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3505),
+                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3502),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
-                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(316),
+                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513),
+                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3513),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(319),
-                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(318),
+                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515),
+                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3515),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(321),
-                            StartDate = new DateTime(2024, 10, 17, 19, 39, 32, 23, DateTimeKind.Utc).AddTicks(320),
+                            ExpirationDate = new DateTime(2029, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516),
+                            StartDate = new DateTime(2024, 10, 26, 14, 15, 32, 968, DateTimeKind.Utc).AddTicks(3516),
                             State = 1,
                             UserId = 4
                         });
@@ -506,19 +508,11 @@ namespace MovieInfo.Infraestructure.Migrations
                         .WithMany("Movies")
                         .HasForeignKey("FavListId");
 
-                    b.HasOne("MovieInfo.Domain.Entities.Media", "MovieCover")
-                        .WithMany()
-                        .HasForeignKey("MovieCoverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MovieInfo.Domain.Entities.Media", "MovieVideo")
                         .WithMany()
                         .HasForeignKey("MovieVideoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("MovieCover");
 
                     b.Navigation("MovieVideo");
                 });

@@ -18,6 +18,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
 
     }
 
+    public async Task<User?> GetByNameAsync(string Name)
+    {
+        return await _users.FirstOrDefaultAsync(x => x.Name == Name);
+    }
+
     public async Task<User?> GetUserWithRoleAndSubscriptionByEmailAsync(string Email)
     {
         return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Email == Email);
@@ -26,5 +31,10 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task<User?> GetUserWithRoleAndSubscriptionByNameAsync(string Name)
     {
         return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Name == Name);
+    }
+
+    public async Task<IEnumerable<User>> GetUsersWithRoleAndSubscription()
+    {
+        return await _users.Include(o => o.Role).Include(o => o.Subscription).ToListAsync();
     }
 }

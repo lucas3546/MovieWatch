@@ -37,5 +37,10 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             return await _movies.Include(o => o.Genres).ToListAsync();
         }
+
+        public async Task<IEnumerable<Movie>?> GetAllMoviesByTitle(string title)
+        {
+            return await _movies.Include(o => o.Genres).Where(o => o.Title.Contains(title)).ToListAsync();
+        }
     }
 }

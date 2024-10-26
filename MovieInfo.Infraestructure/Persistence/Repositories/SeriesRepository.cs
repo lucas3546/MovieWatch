@@ -32,6 +32,10 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
             return await _serie.Include(o => o.Seasons).FirstOrDefaultAsync(o => o.Id == Id);
         }
         
+        public async Task<IEnumerable<Serie>?> GetAllSeriesByTitle(string title)
+        {
+            return await _serie.Include(o => o.Genres).Where(o => o.Title.Contains(title)).ToListAsync();
+        }
 
 
 

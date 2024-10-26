@@ -11,5 +11,7 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories
     {
         Task<Serie?> GetSerieByIdWithGenreAndCover(int Id);
         Task<IEnumerable<Serie>?> GetAllSerieWithGenres();
+        Task<Serie?> GetSerieByIdWithSeason(int Id);
+
     }
 }

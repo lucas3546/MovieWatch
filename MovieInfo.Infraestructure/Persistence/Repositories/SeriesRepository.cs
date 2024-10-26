@@ -26,5 +26,15 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             return await _serie.Include(o => o.Genres).ToListAsync();
         }
+
+        public async Task<Serie?> GetSerieByIdWithSeason(int Id)
+        {
+            return await _serie.Include(o => o.Seasons).FirstOrDefaultAsync(o => o.Id == Id);
+        }
+        
+
+
+
+
     }
 }

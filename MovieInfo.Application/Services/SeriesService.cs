@@ -9,6 +9,7 @@ using MovieInfo.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -91,5 +92,56 @@ namespace MovieInfo.Application.Services
 
             return Result.Ok(resp);
         }
+
+        public async Task<Result<int>> AddSeasonToSeriesAsync(CreateSeasonRequest request)
+        {
+            var seriebyId = await _seriesRepository.GetSerieByIdWithSeason(request.SerieId);
+
+            if (seriebyId == null) return Result.Fail(new NotFoundError("An error ocurred when trying to get serie"));
+
+            var obj = new Season()
+            {
+                SeasonNumber = request.SeasonNumber
+            };
+
+            if (seriebyId.Seasons == null) return Result.Fail("Error when bringing the season");
+
+
+            seriebyId.Seasons.Add(obj);
+            await _seriesRepository.UpdateAsync(seriebyId);
+            return Result.Ok(obj.Id);
+
+        }
+
+        public async Task<Result<IEnumerable<GetSeasonsFromSerieResponse>>> GetSeasonsFromSerieAsync(int id) 
+        {
+            var serie = await _seriesRepository.GetSerieByIdWithSeason(id);
+
+            if (serie == null) return Result.Fail(new NotFoundError("Serie not found"));
+
+            var response = serie.Seasons.Select(s => new GetSeasonsFromSerieResponse(s.Id, s.SeasonNumber));
+
+            return Result.Ok(response);
+
+        }
+
+        public async Task<Result> DeleteSeasonToSerieAsync(int idSerie, int seasonNumber)
+        {
+            var serie = await _seriesRepository.GetSerieByIdWithSeason(idSerie);
+
+            if (serie == null) return Result.Fail(new NotFoundError($"Serie with id {idSerie} not found"));
+
+            var season = serie.Seasons.FirstOrDefault(s => s.SeasonNumber == seasonNumber);
+
+            if (season == null) return Result.Fail(new NotFoundError($"Season with season number {seasonNumber} not found"));
+
+            serie.Seasons.Remove(season);
+            await _seriesRepository.UpdateAsync(serie);
+
+            return Result.Ok();
+        }
+
+
+
     }
 }

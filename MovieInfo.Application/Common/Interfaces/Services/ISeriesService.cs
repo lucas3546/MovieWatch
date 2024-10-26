@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MovieInfo.Application.Common.Requests;
 using MovieInfo.Application.Common.Responses;
+using MovieInfo.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,8 @@ namespace MovieInfo.Application.Common.Interfaces.Services
         Task<Result> UpdateSerieAsync(int Id, UpdateSerieRequest request);
         Task<Result> DeleteSerieAsync(int Id);
         Task<Result<IEnumerable<GetAllSerieResponse>>> GetAllSerieAsync();
+        Task<Result<int>> AddSeasonToSeriesAsync(CreateSeasonRequest request);
+        Task<Result<IEnumerable<GetSeasonsFromSerieResponse>>> GetSeasonsFromSerieAsync(int id);
+        Task<Result> DeleteSeasonToSerieAsync(int idSerie, int seasonNumber);
     }
 }

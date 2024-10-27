@@ -40,6 +40,7 @@ public class UserService : IUserService
 
         await _userRepository.UpdateAsync(user);
 
+        
         return Result.Ok();
     }
 }

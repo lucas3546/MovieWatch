@@ -37,6 +37,8 @@ public static class DependencyInjection
         services.AddScoped<IMercadoPagoService, MercadoPagoService>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<ISeriesRepository, SeriesRepository>();
+        services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+        services.AddScoped<ISeasonRepository, SeasonRepository>();
 
         services.AddAuthentication(x =>
         {

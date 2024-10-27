@@ -7,6 +7,7 @@ using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
 using MovieInfo.Application.Common.Responses;
 using MovieInfo.Application.Services;
+using MovieInfo.Domain.Entities;
 using MovieInfo.Domain.Errors;
 
 namespace MovieInfo.Api.Controllers
@@ -14,9 +15,11 @@ namespace MovieInfo.Api.Controllers
     public class SeriesController : ApiControllerBase
     {
         private readonly ISeriesService _seriesService;
-        public SeriesController(ISeriesService seriesService)
+        private readonly IEpisodeService _episodeService;
+        public SeriesController(ISeriesService seriesService, IEpisodeService episodeService)
         {
             _seriesService = seriesService;
+            _episodeService = episodeService;
         }
 
         [HttpGet("get/{Id}")]
@@ -177,6 +180,26 @@ namespace MovieInfo.Api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("add-episode")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<int>> CreateEpisode(CreateEpisodeRequest request)
+        {
+            var result = await _episodeService.AddEpisodeToSeason(request);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
         }
 
     }

@@ -11,6 +11,7 @@ namespace MovieInfo.Application.Common.Interfaces.Services;
 public interface IUserService
 {
     Task<Result<IEnumerable<GetAllUsersResponse>>> GetAllUsers();
-
     Task<Result> ChangeUserPassword(ChangeUserPasswordRequest request, string UserName);
+    Task<Result> DeleteUserAsync(string name);
+    Task<Result> UpdateUserAsync(UpdateUserRequest request, string name);
 }

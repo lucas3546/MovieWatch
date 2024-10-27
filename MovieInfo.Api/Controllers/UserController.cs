@@ -5,6 +5,7 @@ using MovieInfo.Api.Infraestructure;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
 using MovieInfo.Application.Common.Responses;
+using MovieInfo.Application.Services;
 using MovieInfo.Domain.Errors;
 using MovieInfo.Domain.Interfaces;
 
@@ -65,6 +66,52 @@ public class UserController : ApiControllerBase
             if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("delete/{name}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    //[Authorize(Roles = "Administrador")]
+    public async Task<ActionResult> DeleteUserAsync(string name)
+    {
+        var user = await _userService.DeleteUserAsync(name);
+
+        if (user.IsFailed)
+        {
+            var error = user.Errors.First();
+
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+            return BadRequest(new ApiErrorResponse("Errors", user.Errors));
+        }
+
+        return NoContent();
+    }
+
+    [HttpPut("update/{name}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    //[Authorize(Roles = "Admin")]
+    public async Task<ActionResult> UpdateUserAsync(UpdateUserRequest request,string name)
+    {
+        var user = await _userService.UpdateUserAsync(request, name);
+
+        if (user.IsFailed)
+        {
+            var error = user.Errors.First();
+
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+            return BadRequest(new ApiErrorResponse("Errors", user.Errors));
         }
 
         return NoContent();

@@ -19,10 +19,12 @@ namespace MovieInfo.Application.Services
     {
         private readonly ISeriesRepository _seriesRepository;
         private readonly IGenreRepository _genreRepository;
-        public SeriesService(ISeriesRepository seriesRepository, IGenreRepository genreRepository)
+        private readonly ISeasonRepository _seasonRepository;
+        public SeriesService(ISeriesRepository seriesRepository, IGenreRepository genreRepository, ISeasonRepository seasonRepository)
         {
             _seriesRepository = seriesRepository;
             _genreRepository = genreRepository;
+            _seasonRepository = seasonRepository;
         }
 
         public async Task<Result<int>> CreateSerieAsync(CreateSerieRequest request)
@@ -141,7 +143,17 @@ namespace MovieInfo.Application.Services
             return Result.Ok();
         }
 
+        public async Task<Result> UpdateSeasonToSerieAsync(int id, UpdateSeasonRequest request)
+        {
+            var sea = await _seasonRepository.GetByIdAsync(id);
 
+            if (sea == null) return Result.Fail(new NotFoundError($"Season with id {id} not found"));
 
+            sea.SeasonNumber = request.SeasonNumber;
+
+            await _seasonRepository.UpdateAsync(sea);
+
+            return Result.Ok();
+        }
     }
 }

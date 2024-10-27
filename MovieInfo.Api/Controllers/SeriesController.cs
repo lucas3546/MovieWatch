@@ -182,6 +182,29 @@ namespace MovieInfo.Api.Controllers
             return NoContent();
         }
 
+        [HttpPut("update-season/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> UpdateSeasonToSerieAsync(int id, UpdateSeasonRequest request)
+        {
+            var sea = await _seriesService.UpdateSeasonToSerieAsync(id, request);
+
+            if (sea.IsFailed)
+            {
+                var error = sea.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", sea.Errors));
+            }
+
+            return NoContent();
+        }
+
         [HttpPost("add-episode")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
@@ -189,6 +212,23 @@ namespace MovieInfo.Api.Controllers
         public async Task<ActionResult<int>> CreateEpisode(CreateEpisodeRequest request)
         {
             var result = await _episodeService.AddEpisodeToSeason(request);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("get-episode/{id}")]
+        public async Task<ActionResult<GetEpisodeByIdResponse>> GetEpisodeById(int id)
+        {
+            var result = await _episodeService.GetEpisodeById(id);
 
             if (result.IsFailed)
             {

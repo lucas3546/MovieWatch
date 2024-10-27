@@ -17,6 +17,10 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
             _episodes = dbContext.Set<Episode>();
         }
 
+        public async Task<Episode?> GetEpisodeByIdWithMedia(int id)
+        {
+            return await _episodes.Include(o => o.Media).FirstOrDefaultAsync(x => x.Id == id);
+        }
 
     }
 }

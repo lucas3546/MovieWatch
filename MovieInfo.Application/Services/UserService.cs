@@ -15,9 +15,11 @@ namespace MovieInfo.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    public UserService(IUserRepository userRepository)
+    private readonly IRoleRepository _roleRepository;
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
     {
         _userRepository = userRepository;
+        _roleRepository = roleRepository;
     }
     public async Task<Result<IEnumerable<GetAllUsersResponse>>> GetAllUsers()
     {
@@ -42,4 +44,42 @@ public class UserService : IUserService
 
         return Result.Ok();
     }
+
+    public async Task<Result> DeleteUserAsync(string name)
+    {
+        var user = await _userRepository.GetByNameAsync(name);
+        if (user == null) return Result.Fail("An error ocurred when trying to get the user");
+        await _userRepository.DeleteAsync(user);
+        
+        return Result.Ok();
+    }
+
+    public async Task<Result> UpdateUserAsync(UpdateUserRequest request,string name)
+    {
+        var user = await _userRepository.GetByNameAsync(name);
+
+        if (user == null)
+        {
+            return Result.Fail("An error ocurred when trying to get the user");
+        }
+
+        var role = await _roleRepository.GetRoleByName(request.Role);
+
+        if (role == null)
+        {
+            return Result.Fail(new NotFoundError("Role not found"));
+        }
+
+        user.Name = request.Name;
+        user.Email = request.Email;
+        user.Password = request.Password;
+        user.Role = role;
+
+        await _userRepository.UpdateAsync(user);
+        return Result.Ok();
+    }
+
+
+
+
 }

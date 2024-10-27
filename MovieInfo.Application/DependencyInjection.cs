@@ -19,6 +19,8 @@ public static class DepdencyInjection
         services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<IGenreService, GenreService>();
         services.AddScoped<ISeriesService, SeriesService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ISearchService, SearchService>();
         return services;
     }
 }

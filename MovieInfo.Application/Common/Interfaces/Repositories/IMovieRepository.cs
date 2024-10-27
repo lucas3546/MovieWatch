@@ -13,5 +13,6 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories
         Task<Movie?> GetMovieByIdWithGenreAndMedia(int id);
         Task<IEnumerable<Movie>?> GetMoviesWithShowcaseImage();
         Task<IEnumerable<Movie>?> GetMoviesByGenreName(string genreName);
+        Task<IEnumerable<Movie>?> GetAllMoviesByTitle(string title);
     }
 }

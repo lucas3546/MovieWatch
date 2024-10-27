@@ -44,7 +44,7 @@ namespace MovieInfo.Application.Services
 
             if (ser == null) return Result.Fail(new NotFoundError($"Serie with id {Id} not found"));
 
-            var resp = new GetSerieByIdResponse(ser.Id, ser.Title, ser.Synopsis, ser.Language, ser.Director.ToString(), ser.SerieCoverUrl, ser.Genres.Select(g => g.Name));
+            var resp = new GetSerieByIdResponse(ser.Id, ser.Title, ser.Synopsis, ser.Language, ser.Director.ToString(), ser.SerieCoverUrl, ser.Genres.Select(g => g.Name), ser.Seasons.Select(o => new GetSeasonsFromSerieResponse(o.Id, o.SeasonNumber)));
 
             return Result.Ok(resp);
         }

@@ -19,7 +19,7 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         public async Task<Serie?> GetSerieByIdWithGenreAndCover(int Id)
         {
-            return await _serie.Include(o => o.Genres).FirstOrDefaultAsync(o => o.Id == Id);
+            return await _serie.Include(o => o.Genres).Include(o => o.Seasons).FirstOrDefaultAsync(o => o.Id == Id);
         }
 
         public async Task<IEnumerable<Serie>?> GetAllSerieWithGenres()

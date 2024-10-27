@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Responses
 {
-    public record GetSerieByIdResponse(int Id, string Title, string Synopsis, string Language, string Director, string SerieCoverUrl, IEnumerable<string> Genres);
+    public record GetSerieByIdResponse(int Id, string Title, string Synopsis, string Language, string Director, string SerieCoverUrl, IEnumerable<string> Genres, IEnumerable<GetSeasonsFromSerieResponse> Seasons);
 }

@@ -202,5 +202,22 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet("get-episode/{id}")]
+        public async Task<ActionResult<GetEpisodeByIdResponse>> GetEpisodeById(int id)
+        {
+            var result = await _episodeService.GetEpisodeById(id);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
+
     }
 }

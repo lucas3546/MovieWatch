@@ -2,7 +2,9 @@
 using MovieInfo.Application.Common.Helpers;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
+using MovieInfo.Application.Common.Models;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Entities;
 using MovieInfo.Domain.Errors;
 using System;
@@ -55,6 +57,17 @@ namespace MovieInfo.Application.Services
             await _episodeRepository.AddAsync(episode);
 
             return Result.Ok(episode.Id);
+        }
+
+        public async Task<Result<GetEpisodeByIdResponse>> GetEpisodeById(int Id)
+        {
+            var episode = await _episodeRepository.GetEpisodeByIdWithMedia(Id);
+            if (episode is null) return Result.Fail(new NotFoundError($"Episode not found"));
+
+            var response = new GetEpisodeByIdResponse(episode.Id, episode.Title, new MediaModel(episode.Media.FileName, episode.Media.FileExtension, episode.Media.IsPublic));
+
+            return Result.Ok(response);
+
         }
     }
 }

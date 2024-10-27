@@ -1,4 +1,6 @@
-﻿using MovieInfo.Domain.Entities;
+﻿using FluentResults;
+using MovieInfo.Application.Common.Requests;
+using MovieInfo.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,5 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories
         Task<IEnumerable<Serie>?> GetAllSerieWithGenres();
         Task<Serie?> GetSerieByIdWithSeason(int Id);
         Task<IEnumerable<Serie>?> GetAllSeriesByTitle(string title);
-
     }
 }

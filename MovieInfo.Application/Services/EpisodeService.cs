@@ -3,6 +3,7 @@ using MovieInfo.Application.Common.Helpers;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
+using MovieInfo.Application.Common.Responses;
 using MovieInfo.Domain.Entities;
 using MovieInfo.Domain.Errors;
 using System;
@@ -55,6 +56,16 @@ namespace MovieInfo.Application.Services
             await _episodeRepository.AddAsync(episode);
 
             return Result.Ok(episode.Id);
+        }
+        public async Task<Result<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id)
+        {
+            var season = await _seasonRepository.GetSeasonByIdWithEpisode(id);
+
+            if (season == null) return Result.Fail(new NotFoundError("Season not found"));
+
+            var resp = season.Episodes.Select(e => new GetEpisodeFromSeasonResponse(e.Id, e.Title));
+
+            return Result.Ok(resp);
         }
     }
 }

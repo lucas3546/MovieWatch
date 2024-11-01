@@ -16,7 +16,5 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
         {
             _episodes = dbContext.Set<Episode>();
         }
-
-
     }
 }

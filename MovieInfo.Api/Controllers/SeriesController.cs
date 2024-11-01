@@ -48,7 +48,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        public async Task<ActionResult<int>> CreateSerieAsync([FromForm]CreateSerieRequest request)
+        public async Task<ActionResult<int>> CreateSerieAsync(CreateSerieRequest request)
         {
             var result = await _seriesService.CreateSerieAsync(request);
 
@@ -67,7 +67,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        public async Task<ActionResult> UpdateSerieAsync(int Id, [FromForm] UpdateSerieRequest request)
+        public async Task<ActionResult> UpdateSerieAsync(int Id, UpdateSerieRequest request)
         {
             var ser = await _seriesService.UpdateSerieAsync(Id, request);
 
@@ -225,5 +225,24 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet("get-episode-from-season/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id)
+        {
+            var result = await _episodeService.GetEpisodeFromSeasonAsync(id);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
     }
 }

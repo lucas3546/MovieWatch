@@ -120,7 +120,48 @@ namespace MovieInfo.Application.Services
             return Result.Ok();
         }
 
+        public async Task<Result> UpdateEpisodeByIdAsync(int id, UpdateEpisodeByIdRequest request)
+        {
+            var episode = await _episodeRepository.GetEpisodeByIdWithMedia(id);
 
+            if (episode == null) return Result.Fail(new NotFoundError($"Episode with id {id} not found"));
+
+            Media movieVideo;
+
+            try
+            {
+                bool deleteEpisodeVideoResult = _fileService.DeleteFile(episode.Media.FileName, episode.Media.IsPublic);
+                if (deleteEpisodeVideoResult is false)
+                {
+                    return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail($"{ex.Message}");
+            }
+            
+            //Segui desde aca
+
+            try
+            {
+                var (episodeFileName, episodeFileType, isVideoPublic) = await _fileService.SaveFileAsync(request.Media, false);
+                movieVideo = new Media(episodeFileName, episodeFileType, isVideoPublic);
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail(new FileSaveError("File save error", ex.Message));
+            }
+
+           
+
+            episode.Title = request.Title;
+            episode.Media = movieVideo;
+
+            await _episodeRepository.UpdateAsync(episode);
+
+            return Result.Ok();
+        }
 
 
     }

@@ -265,5 +265,53 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
+        //Episode
+
+        [HttpDelete("delete-episode/{Id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> DeleteEpisodeAsync(int Id)
+        {
+            var episode = await _episodeService.DeleteEpisodeByIdAsync(Id);
+
+            if (episode.IsFailed)
+            {
+                var error = episode.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", episode.Errors));
+            }
+
+            return NoContent();
+        }
+
+        [HttpPut("update-episode/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
+        public async Task<ActionResult> UpdateEpisodeAsync(int id, UpdateEpisodeByIdRequest request)
+        {
+            var episode = await _episodeService.UpdateEpisodeByIdAsync(id, request);
+
+            if (episode.IsFailed)
+            {
+                var error = episode.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", episode.Errors));
+            }
+
+            return NoContent();
+        }
+
     }
 }

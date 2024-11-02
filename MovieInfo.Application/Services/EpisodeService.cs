@@ -84,20 +84,44 @@ namespace MovieInfo.Application.Services
 
 
 
-        //public async Task<Result> DeleteEpisodeAsync(int id)
-        //{
-        //    var episode = await GetEpisodeById(id);
+        public async Task<Result> DeleteEpisodeAsync(int id)
+        {
+            var episode = await _episodeRepository.GetByIdAsync(id);
 
-        //    if (episode == null) return Result.Fail(new NotFoundError($"Episode with id {id} not found"));
+            if (episode == null) return Result.Fail(new NotFoundError($"Episode with id {id} not found"));
 
-        //    await _episodeRepository.DeleteAsync(episode);
+            await _episodeRepository.DeleteAsync(episode);
 
-        //    return Result.Ok();
-
-        //}
-
-
-
+            return Result.Ok();
 
         }
+
+        public async Task<Result> DeleteEpisodeByIdAsync(int id)
+        {
+            var episode = await _episodeRepository.GetEpisodeByIdWithMedia(id);
+
+            if (episode == null) return Result.Fail(new NotFoundError($"Episode with id {id} not found"));
+
+            await _episodeRepository.DeleteAsync(episode);
+
+            try
+            {
+                bool deleteEpisodeVideoResult = _fileService.DeleteFile(episode.Media.FileName, episode.Media.IsPublic);
+                if (deleteEpisodeVideoResult is false)
+                {
+                    return Result.Fail("There are an error when deleting Movie Cover or Movie Video, they may not be found in the file system");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result.Fail($"{ex.Message}");
+            }
+
+            return Result.Ok();
+        }
+
+
+
+
+    }
 }

@@ -13,4 +13,5 @@ public interface IEpisodeService
     Task<Result<int>> AddEpisodeToSeason(CreateEpisodeRequest request);
     Task<Result<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id);
     Task<Result<GetEpisodeByIdResponse>> GetEpisodeById(int Id);
+    Task<Result> DeleteEpisodeByIdAsync(int id);
 }

@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Interfaces.Services;
-public interface IEpisodeService
+public interface IFavoritesService
 {
-    Task<Result<int>> AddEpisodeToSeason(CreateEpisodeRequest request);
-    Task<Result<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id);
-    Task<Result<GetEpisodeByIdResponse>> GetEpisodeById(int Id);
+    Task<Result> AddToFavorites(AddToFavoritesRequest request, string UserName);
+    Task<Result<IEnumerable<GetFavoritesFromUserResponse>>> GetFavoritesFromUser(string UserName);
+    Task<Result> RemoveFromFavorites(int id, string userName, int type);
 }

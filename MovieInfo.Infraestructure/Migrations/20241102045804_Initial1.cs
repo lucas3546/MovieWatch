@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieInfo.Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial5 : Migration
+    public partial class Initial1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,23 +37,6 @@ namespace MovieInfo.Infraestructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Series",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Synopsis = table.Column<string>(type: "TEXT", nullable: false),
-                    Director = table.Column<string>(type: "TEXT", nullable: false),
-                    Language = table.Column<string>(type: "TEXT", nullable: false),
-                    SerieCoverUrl = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Series", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +72,70 @@ namespace MovieInfo.Infraestructure.Migrations
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Favorites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favorites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Favorites_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    State = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Series",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Synopsis = table.Column<string>(type: "TEXT", nullable: false),
+                    Director = table.Column<string>(type: "TEXT", nullable: false),
+                    Language = table.Column<string>(type: "TEXT", nullable: false),
+                    SerieCoverUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    FavoritesId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Series", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Series_Favorites_FavoritesId",
+                        column: x => x.FavoritesId,
+                        principalTable: "Favorites",
                         principalColumn: "Id");
                 });
 
@@ -137,64 +184,17 @@ namespace MovieInfo.Infraestructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FavLists",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FavLists", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FavLists_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Subscriptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    State = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Subscriptions_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Episodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
-                    SeasonId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FavListId = table.Column<int>(type: "INTEGER", nullable: true)
+                    SeasonId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Episodes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Episodes_FavLists_FavListId",
-                        column: x => x.FavListId,
-                        principalTable: "FavLists",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Episodes_Seasons_SeasonId",
                         column: x => x.SeasonId,
@@ -239,15 +239,15 @@ namespace MovieInfo.Infraestructure.Migrations
                     ShowCaseImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     MovieCoverUrl = table.Column<string>(type: "TEXT", nullable: false),
                     MovieVideoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    FavListId = table.Column<int>(type: "INTEGER", nullable: true)
+                    FavoritesId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Movies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Movies_FavLists_FavListId",
-                        column: x => x.FavListId,
-                        principalTable: "FavLists",
+                        name: "FK_Movies_Favorites_FavoritesId",
+                        column: x => x.FavoritesId,
+                        principalTable: "Favorites",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Movies_Media_MovieVideoId",
@@ -316,20 +316,26 @@ namespace MovieInfo.Infraestructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Favorites",
+                columns: new[] { "Id", "UserId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 },
+                    { 4, 4 }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Subscriptions",
                 columns: new[] { "Id", "ExpirationDate", "StartDate", "State", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9986), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9982), 0, 1 },
-                    { 2, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9994), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9993), 0, 2 },
-                    { 3, new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9998), new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9997), 0, 3 },
-                    { 4, new DateTime(2029, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc), new DateTime(2024, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc), 1, 4 }
+                    { 1, new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5407), new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5404), 0, 1 },
+                    { 2, new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5415), new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5414), 0, 2 },
+                    { 3, new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5416), new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5416), 0, 3 },
+                    { 4, new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5418), new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5417), 1, 4 }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Episodes_FavListId",
-                table: "Episodes",
-                column: "FavListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Episodes_SeasonId",
@@ -337,9 +343,10 @@ namespace MovieInfo.Infraestructure.Migrations
                 column: "SeasonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavLists_UserId",
-                table: "FavLists",
-                column: "UserId");
+                name: "IX_Favorites_UserId",
+                table: "Favorites",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_GenreMovie_MovieId",
@@ -358,9 +365,9 @@ namespace MovieInfo.Infraestructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Movies_FavListId",
+                name: "IX_Movies_FavoritesId",
                 table: "Movies",
-                column: "FavListId");
+                column: "FavoritesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Movies_MovieVideoId",
@@ -371,6 +378,11 @@ namespace MovieInfo.Infraestructure.Migrations
                 name: "IX_Seasons_SerieId",
                 table: "Seasons",
                 column: "SerieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Series_FavoritesId",
+                table: "Series",
+                column: "FavoritesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subscriptions_UserId",
@@ -412,16 +424,16 @@ namespace MovieInfo.Infraestructure.Migrations
                 name: "Episodes");
 
             migrationBuilder.DropTable(
-                name: "FavLists");
-
-            migrationBuilder.DropTable(
                 name: "Seasons");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Series");
 
             migrationBuilder.DropTable(
-                name: "Series");
+                name: "Favorites");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Roles");

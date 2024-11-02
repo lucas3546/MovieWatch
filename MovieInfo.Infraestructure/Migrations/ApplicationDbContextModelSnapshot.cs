@@ -53,9 +53,6 @@ namespace MovieInfo.Infraestructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("FavListId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("SeasonId")
                         .HasColumnType("INTEGER");
 
@@ -65,14 +62,12 @@ namespace MovieInfo.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FavListId");
-
                     b.HasIndex("SeasonId");
 
                     b.ToTable("Episodes");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.FavList", b =>
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Favorites", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,9 +78,32 @@ namespace MovieInfo.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.ToTable("FavLists");
+                    b.ToTable("Favorites");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            UserId = 4
+                        });
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Genre", b =>
@@ -176,7 +194,7 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("FavListId")
+                    b.Property<int?>("FavoritesId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Language")
@@ -206,7 +224,7 @@ namespace MovieInfo.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FavListId");
+                    b.HasIndex("FavoritesId");
 
                     b.HasIndex("MovieVideoId");
 
@@ -274,6 +292,9 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("FavoritesId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -291,6 +312,8 @@ namespace MovieInfo.Infraestructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FavoritesId");
 
                     b.ToTable("Series");
                 });
@@ -324,32 +347,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9986),
-                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9982),
+                            ExpirationDate = new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5407),
+                            StartDate = new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5404),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9994),
-                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9993),
+                            ExpirationDate = new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5415),
+                            StartDate = new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5414),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9998),
-                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 113, DateTimeKind.Utc).AddTicks(9997),
+                            ExpirationDate = new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5416),
+                            StartDate = new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5416),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc),
-                            StartDate = new DateTime(2024, 10, 26, 17, 58, 14, 114, DateTimeKind.Utc),
+                            ExpirationDate = new DateTime(2029, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5418),
+                            StartDate = new DateTime(2024, 11, 2, 4, 58, 4, 71, DateTimeKind.Utc).AddTicks(5417),
                             State = 1,
                             UserId = 4
                         });
@@ -473,10 +496,6 @@ namespace MovieInfo.Infraestructure.Migrations
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Episode", b =>
                 {
-                    b.HasOne("MovieInfo.Domain.Entities.FavList", null)
-                        .WithMany("Episodes")
-                        .HasForeignKey("FavListId");
-
                     b.HasOne("MovieInfo.Domain.Entities.Season", "Season")
                         .WithMany("Episodes")
                         .HasForeignKey("SeasonId")
@@ -486,11 +505,11 @@ namespace MovieInfo.Infraestructure.Migrations
                     b.Navigation("Season");
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.FavList", b =>
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Favorites", b =>
                 {
                     b.HasOne("MovieInfo.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Favorites")
+                        .HasForeignKey("MovieInfo.Domain.Entities.Favorites", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -508,9 +527,9 @@ namespace MovieInfo.Infraestructure.Migrations
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Movie", b =>
                 {
-                    b.HasOne("MovieInfo.Domain.Entities.FavList", null)
+                    b.HasOne("MovieInfo.Domain.Entities.Favorites", null)
                         .WithMany("Movies")
-                        .HasForeignKey("FavListId");
+                        .HasForeignKey("FavoritesId");
 
                     b.HasOne("MovieInfo.Domain.Entities.Media", "MovieVideo")
                         .WithMany()
@@ -530,6 +549,13 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Serie");
+                });
+
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Serie", b =>
+                {
+                    b.HasOne("MovieInfo.Domain.Entities.Favorites", null)
+                        .WithMany("Series")
+                        .HasForeignKey("FavoritesId");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Subscription", b =>
@@ -558,11 +584,11 @@ namespace MovieInfo.Infraestructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieInfo.Domain.Entities.FavList", b =>
+            modelBuilder.Entity("MovieInfo.Domain.Entities.Favorites", b =>
                 {
-                    b.Navigation("Episodes");
-
                     b.Navigation("Movies");
+
+                    b.Navigation("Series");
                 });
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.Role", b =>
@@ -582,6 +608,8 @@ namespace MovieInfo.Infraestructure.Migrations
 
             modelBuilder.Entity("MovieInfo.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("Subscription");
                 });
 #pragma warning restore 612, 618

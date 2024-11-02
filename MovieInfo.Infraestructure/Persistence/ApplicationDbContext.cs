@@ -14,7 +14,7 @@ namespace MovieInfo.Infraestructure.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Episode> Episodes { get; set; }
-        public DbSet<FavList> FavLists { get; set; }
+        public DbSet<Favorites> Favorites { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Season> Seasons { get; set; }

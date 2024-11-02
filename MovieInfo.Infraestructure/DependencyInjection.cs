@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<ISeriesRepository, SeriesRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISeasonRepository, SeasonRepository>();
+        services.AddScoped<IFavoritesRepository, FavoritesRepository>();
 
         services.AddAuthentication(x =>
         {

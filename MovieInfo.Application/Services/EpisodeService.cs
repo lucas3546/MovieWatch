@@ -58,6 +58,17 @@ namespace MovieInfo.Application.Services
 
             return Result.Ok(episode.Id);
         }
+        public async Task<Result<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id)
+        {
+            var season = await _seasonRepository.GetSeasonByIdWithEpisode(id);
+
+            if (season == null) return Result.Fail(new NotFoundError("Season not found"));
+
+            var resp = season.Episodes.Select(e => new GetEpisodeFromSeasonResponse(e.Id, e.Title));
+
+            return Result.Ok(resp);
+
+        }
 
         public async Task<Result<GetEpisodeByIdResponse>> GetEpisodeById(int Id)
         {

@@ -30,8 +30,14 @@ public static class ApplicationDbContextSeed
             new User { Id = 3, Name = "Usuario1", Email = "usuario1@gmail.com", Password = "Usuario1", RoleId = 1 },
             new User { Id = 4, Name = "Usuario2", Email = "usuario2@gmail.com", Password = "Usuario2", RoleId = 1 }
 
-
         );
+
+        builder.Entity<Favorites>().HasData(
+            new Favorites { Id = 1, UserId = 1 },
+            new Favorites { Id = 2, UserId = 2 },
+            new Favorites { Id = 3, UserId = 3 },
+            new Favorites { Id = 4, UserId = 4 }
+            );
 
         builder.Entity<Subscription>().HasData(
         new Subscription { Id = 1, StartDate = DateTime.UtcNow, ExpirationDate = DateTime.UtcNow.AddYears(5), State = SubscriptionState.Active, UserId = 1 },

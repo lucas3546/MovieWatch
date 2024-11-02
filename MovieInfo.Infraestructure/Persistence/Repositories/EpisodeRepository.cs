@@ -19,8 +19,7 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         public async Task<Episode?> GetEpisodeByIdWithMedia(int id)
         {
-            return await _episodes.Include(o => o.Media).FirstOrDefaultAsync(x => x.Id == id);
+            return await _episodes.Include(o => o.Media).FirstOrDefaultAsync(o => o.Id == id);
         }
-
     }
 }

@@ -15,4 +15,9 @@ public class SeasonRepository : GenericRepository<Season>, ISeasonRepository
     {
         _seasons = dbContext.Set<Season>();
     }
+
+    public async Task<Season?> GetSeasonByIdWithEpisode(int Id)
+    {
+        return await _seasons.Include(o => o.Episodes).FirstOrDefaultAsync(o => o.Id == Id);
+    }
 }

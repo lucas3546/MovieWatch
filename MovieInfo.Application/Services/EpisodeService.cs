@@ -69,5 +69,24 @@ namespace MovieInfo.Application.Services
             return Result.Ok(response);
 
         }
-    }
+
+
+
+
+        //public async Task<Result> DeleteEpisodeAsync(int id)
+        //{
+        //    var episode = await GetEpisodeById(id);
+
+        //    if (episode == null) return Result.Fail(new NotFoundError($"Episode with id {id} not found"));
+
+        //    await _episodeRepository.DeleteAsync(episode);
+
+        //    return Result.Ok();
+
+        //}
+
+
+
+
+        }
 }

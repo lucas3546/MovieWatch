@@ -15,6 +15,7 @@ namespace MovieInfo.Domain.Entities
         public string? RefreshToken { get; set; }
 
         public Subscription? Subscription { get; set; }
+        public Favorites? Favorites { get; set; }
         public int? RoleId { get; set; }
         public Role Role { get; set; }
     }

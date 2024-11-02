@@ -8,4 +8,5 @@ using System.Threading.Tasks;
 namespace MovieInfo.Application.Common.Interfaces.Repositories;
 public interface ISeasonRepository : IGenericRepository<Season>
 {
+    Task<Season?> GetSeasonByIdWithEpisode(int Id);
 }

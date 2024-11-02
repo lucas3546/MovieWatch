@@ -36,12 +36,15 @@ public class AuthService : IAuthService
         var role = await _roleRepository.GetRoleByName(Roles.User);
         if (role == null) return Result.Fail("An error ocurred with the role.");
 
+        var favorites = new Favorites(); //Initialize favorites for user.
+
         var user = new User
         {
             Name = request.UserName,
             Password = request.Password,
             Email = request.Email,
-            Role = role
+            Role = role,
+            Favorites = favorites
         };
 
         await _userRepository.AddAsync(user);

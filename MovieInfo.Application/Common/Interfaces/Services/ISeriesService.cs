@@ -21,5 +21,6 @@ namespace MovieInfo.Application.Common.Interfaces.Services
         Task<Result<IEnumerable<GetSeasonsFromSerieResponse>>> GetSeasonsFromSerieAsync(int id);
         Task<Result> DeleteSeasonToSerieAsync(int idSerie, int seasonNumber);
         Task<Result> UpdateSeasonToSerieAsync(int id, UpdateSeasonRequest request);
+        Task<Result<IEnumerable<GetSeriesFromGenreNameResponse>>> GetSeriesFromGenreName(string genreName);
     }
 }

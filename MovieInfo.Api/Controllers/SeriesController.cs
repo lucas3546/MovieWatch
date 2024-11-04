@@ -120,6 +120,27 @@ namespace MovieInfo.Api.Controllers
 
             return Ok(result.Value);
         }
+
+        [HttpGet("get-series-by-genre/{genreName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<GetSeriesFromGenreNameResponse>>> GetSeriesFromGenreName(string genreName)
+        {
+            var result = await _seriesService.GetSeriesFromGenreName(genreName);
+
+            if (result.IsFailed)
+            {
+                var error = result.Errors.First();
+
+                if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+                return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+            }
+
+            return Ok(result.Value);
+        }
+
         [HttpPost("add-season")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
@@ -225,11 +246,11 @@ namespace MovieInfo.Api.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("get-episode-from-season/{id}")]
+        [HttpGet("get-episodes-from-season/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodeFromSeasonAsync(int id)
+        public async Task<ActionResult<IEnumerable<GetEpisodeFromSeasonResponse>>> GetEpisodesFromSeasonAsync(int id)
         {
             var result = await _episodeService.GetEpisodeFromSeasonAsync(id);
 
@@ -244,6 +265,8 @@ namespace MovieInfo.Api.Controllers
 
             return Ok(result.Value);
         }
+
+
 
         [HttpGet("get-episode/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

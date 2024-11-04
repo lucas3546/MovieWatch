@@ -50,6 +50,8 @@ public class SubscriptionService :  ISubscriptionService
 
         user.Subscription = newSubscription;
 
+        await _userRepository.UpdateAsync(user);
+
         return Result.Ok();
     }
 

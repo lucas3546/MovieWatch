@@ -56,7 +56,7 @@ public class AuthController : ApiControllerBase
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
-        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
+        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure=false, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
 
         return Ok(result.Value.Jwt);
     }
@@ -88,7 +88,7 @@ public class AuthController : ApiControllerBase
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
-        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
+        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure = false, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
 
         return Ok(result.Value.Jwt);
     }

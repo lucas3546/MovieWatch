@@ -51,6 +51,16 @@ namespace MovieInfo.Application.Services
             return Result.Ok(resp);
         }
 
+        public async Task<Result<IEnumerable<GetSeriesFromGenreNameResponse>>> GetSeriesFromGenreName(string genreName)
+        {
+            var series = await _seriesRepository.GetSeriesByGenreName(genreName);
+            if(series == null) return Result.Fail(new NotFoundError($"Series not found"));
+
+            var response = series.Select(o => new GetSeriesFromGenreNameResponse(o.Id, o.Title, o.Synopsis, o.Language, o.Director, o.SerieCoverUrl, o.Genres.Select(o => o.Name)));
+
+            return Result.Ok(response);
+        }
+
         public async Task<Result> UpdateSerieAsync(int Id, UpdateSerieRequest request)
         {
             var ser = await _seriesRepository.GetSerieByIdWithGenreAndCover(Id);

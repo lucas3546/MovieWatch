@@ -40,7 +40,7 @@ namespace MovieInfo.Infraestructure.Persistence.Repositories
 
         public async Task<IEnumerable<Movie>?> GetAllMoviesByTitle(string title)
         {
-            return await _movies.Include(o => o.Genres).Where(o => o.Title.Contains(title)).ToListAsync();
+            return await _movies.Include(o => o.Genres).Where(o => EF.Functions.Like(o.Title, $"%{title}%")).ToListAsync();
         }
     }
 }

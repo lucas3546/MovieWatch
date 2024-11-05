@@ -9,6 +9,7 @@ namespace MovieInfo.Application.Common.Interfaces.Repositories;
 public interface IUserRepository : IGenericRepository<User>
 {
     Task<User?> GetByNameAsync(string Name);
+    Task<User?> GetByEmailAsync(string Email);
     Task<User?> GetUserWithRoleAndSubscriptionByEmailAsync(string Email);
     Task<User?> GetUserWithRoleAndSubscriptionByNameAsync(string Name);
     Task<IEnumerable<User>> GetUsersWithRoleAndSubscription();

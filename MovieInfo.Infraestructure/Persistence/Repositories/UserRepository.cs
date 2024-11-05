@@ -23,6 +23,12 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return await _users.FirstOrDefaultAsync(x => x.Name == Name);
     }
 
+
+    public async Task<User?> GetByEmailAsync(string Email)
+    {
+        return await _users.FirstOrDefaultAsync(x => x.Email == Email);
+    }
+
     public async Task<User?> GetUserWithRoleAndSubscriptionByEmailAsync(string Email)
     {
         return await _users.Include(o => o.Role).Include(o => o.Subscription).FirstOrDefaultAsync(o => o.Email == Email);

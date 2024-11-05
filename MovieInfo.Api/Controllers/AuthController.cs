@@ -7,6 +7,7 @@ using MovieInfo.Application.Common.Interfaces.Services;
 using MovieInfo.Application.Common.Requests;
 using MovieInfo.Domain.Errors;
 using MovieInfo.Domain.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieInfo.Api.Controllers;
 
@@ -91,6 +92,40 @@ public class AuthController : ApiControllerBase
         Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure = false, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
 
         return Ok(result.Value.Jwt);
+    }
+
+    [HttpPost("request-reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> RequestResetPassword([FromBody][EmailAddress] string Email)
+    {
+        var result = await _authService.RequestResetPassword(Email);
+
+        if (result.IsFailed)
+        {
+            var error = result.Errors.First();
+
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+        }
+
+        return Ok();
+    }
+
+    [HttpPost("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
+    {
+        var result = await _authService.ResetPassword(request);
+
+        if (result.IsFailed)
+        {
+            var error = result.Errors.First();
+
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+        }
+
+        return Ok();
     }
 
 }

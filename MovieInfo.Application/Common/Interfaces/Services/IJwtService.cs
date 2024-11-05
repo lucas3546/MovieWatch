@@ -9,6 +9,8 @@ namespace MovieInfo.Application.Common.Interfaces.Services
 {
     public interface IJwtService
     {
-        string GenerateToken(List<Claim> claimsForToken);
+        string GenerateToken(List<Claim> claimsForToken, DateTime ExpirationTime);
+
+        ClaimsPrincipal? ValidateToken(string token);
     }
 }

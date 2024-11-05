@@ -87,7 +87,6 @@ public static class DependencyInjection
             x.MultipartHeadersLengthLimit = int.MaxValue;
         });
 
-
         return services;
     }
 }

@@ -24,12 +24,14 @@ public class AuthService : IAuthService
     private readonly IRoleRepository _roleRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IJwtService _jwtService;
-    public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, ISubscriptionRepository subscriptionRepository, IJwtService jwtService)
+    private readonly IEmailService _emailService;
+    public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, ISubscriptionRepository subscriptionRepository, IJwtService jwtService, IEmailService emailService)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _subscriptionRepository = subscriptionRepository;
         _jwtService = jwtService;
+        _emailService = emailService;
     }
     public async Task<Result<int>> RegisterAsync(RegisterUserRequest request)
     {
@@ -72,7 +74,7 @@ public class AuthService : IAuthService
         claimsForToken.Add(new Claim("role", user.Role.RoleName));
         claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
 
-        string jwt =_jwtService.GenerateToken(claimsForToken);
+        string jwt =_jwtService.GenerateToken(claimsForToken, DateTime.UtcNow.AddHours(1));
         
         return Result.Ok(new AuthenticateResponse(jwt, user.RefreshToken));
     }
@@ -96,9 +98,50 @@ public class AuthService : IAuthService
         claimsForToken.Add(new Claim("role", user.Role.RoleName));
         claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
 
-        string jwt = _jwtService.GenerateToken(claimsForToken);
+        string jwt = _jwtService.GenerateToken(claimsForToken, DateTime.UtcNow.AddHours(1));
 
         return Result.Ok(new RefreshTokenResponse(jwt, user.RefreshToken));
+    }
+
+    public async Task<Result> RequestResetPassword(string Email)
+    {
+        var user = await _userRepository.GetByEmailAsync(Email);
+        if (user == null) return Result.Fail(new NotFoundError("We dont have any user with registered with that email :("));
+
+        var claimsForToken = new List<Claim>();
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
+        claimsForToken.Add(new Claim("Type", "PasswordReset"));
+
+        string jwtForResetPassword = _jwtService.GenerateToken(claimsForToken, DateTime.UtcNow.AddMinutes(20));
+
+        var emailSendingResult = await _emailService.SendEmailAsync(user.Email, "Reset Password", $"Reset your password with this url: https://localhost:3001/reset-password?token={jwtForResetPassword} this is only valid for 20 minutes");
+        if (!emailSendingResult) return Result.Fail("An error ocurred when sending the email");
+
+        Console.WriteLine(jwtForResetPassword);
+
+        return Result.Ok();
+        
+    }
+
+    public async Task<Result> ResetPassword(ResetPasswordRequest request)
+    {
+        var claims = _jwtService.ValidateToken(request.ResetJwt);
+        if (claims == null) return Result.Fail("Token invalid or expired, please request another reset password");
+
+        var tokenType = claims.FindFirst("Type")?.Value ?? "";
+        if(!tokenType.Equals("PasswordReset")) return Result.Fail("This token is not for this action!!!");
+
+        var userId = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null) return Result.Fail("Token invalid or expired, please request another reset password");
+
+        var user = await _userRepository.GetByIdAsync(int.Parse(userId));
+        if(user == null) return Result.Fail("Token invalid or expired, please request another reset password");
+
+        user.Password = request.NewPassword;
+
+        await _userRepository.UpdateAsync(user);
+        
+        return Result.Ok();
     }
 
 }

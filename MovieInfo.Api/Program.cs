@@ -1,4 +1,5 @@
 using Microsoft.Extensions.FileProviders;
+using MovieInfo.Domain.Configurations;
 using MovieInfo.Domain.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ Directory.CreateDirectory(FilePaths.ProtectedMediaPath);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfraestructureServices(builder.Configuration);
 builder.Services.AddApiServices();
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 var app = builder.Build();
 

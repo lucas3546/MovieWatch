@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MovieInfo.Application.Common.Interfaces.Repositories;
 using MovieInfo.Application.Common.Interfaces.Services;
@@ -35,17 +36,18 @@ public static class DependencyInjection
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IMercadoPagoService, MercadoPagoService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGenreRepository, GenreRepository>();
         services.AddScoped<ISeriesRepository, SeriesRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISeasonRepository, SeasonRepository>();
         services.AddScoped<IFavoritesRepository, FavoritesRepository>();
-
+        
         services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(x =>
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, x =>
         {
             var Key = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
             x.SaveToken = true;
@@ -61,6 +63,7 @@ public static class DependencyInjection
                 IssuerSigningKey = new SymmetricSecurityKey(Key),
                 ClockSkew = TimeSpan.Zero
             };
+
         });
 
         return services;

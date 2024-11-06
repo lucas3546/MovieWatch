@@ -166,9 +166,9 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         //[Authorize(Policy = "AdminOrEmployeePolicy")]
-        public async Task<ActionResult> DeleteSeasonFromSerieAsync([FromQuery]int idSerie,[FromQuery] int seasonNumber)
+        public async Task<ActionResult> DeleteSeasonFromSerieAsync([FromQuery]int idSeason)
         {
-            var season = await _seriesService.DeleteSeasonToSerieAsync(idSerie, seasonNumber);
+            var season = await _seriesService.DeleteSeasonToSerieAsync(idSeason);
 
             if (season.IsFailed)
             {

@@ -15,7 +15,7 @@ namespace MovieInfo.Application.Common.Requests
         public required string Title { get; set; }
         [RegularExpression(@"^([0-1]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$", ErrorMessage = "Duration must be in the format hh:mm:ss")]
         public required string Duration { get; set; }
-        [MinLength(5),MaxLength(255)]
+        [MinLength(5),MaxLength(9000)]
         public required string Synopsis { get; set; }
         [MinLength(4), MaxLength(50)]
         public required string Language { get; set; }

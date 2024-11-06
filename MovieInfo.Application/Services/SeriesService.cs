@@ -137,18 +137,14 @@ namespace MovieInfo.Application.Services
 
         }
 
-        public async Task<Result> DeleteSeasonToSerieAsync(int idSerie, int seasonNumber)
+        public async Task<Result> DeleteSeasonToSerieAsync(int idSeason)
         {
-            var serie = await _seriesRepository.GetSerieByIdWithSeason(idSerie);
 
-            if (serie == null) return Result.Fail(new NotFoundError($"Serie with id {idSerie} not found"));
+            var season = await _seasonRepository.GetByIdAsync(idSeason);
 
-            var season = serie.Seasons.FirstOrDefault(s => s.SeasonNumber == seasonNumber);
+            if (season == null) return Result.Fail(new NotFoundError($"Season with season number {idSeason} not found"));
 
-            if (season == null) return Result.Fail(new NotFoundError($"Season with season number {seasonNumber} not found"));
-
-            serie.Seasons.Remove(season);
-            await _seriesRepository.UpdateAsync(serie);
+            await _seasonRepository.DeleteAsync(season);
 
             return Result.Ok();
         }

@@ -13,7 +13,7 @@ namespace MovieInfo.Domain.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public string? RefreshToken { get; set; }
-
+        public DateTime RegistrationUser { get; set; }
         public Subscription? Subscription { get; set; }
         public Favorites? Favorites { get; set; }
         public int? RoleId { get; set; }

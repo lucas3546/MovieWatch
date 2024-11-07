@@ -23,6 +23,7 @@ public static class DepdencyInjection
         services.AddScoped<ISearchService, SearchService>();
         services.AddScoped<IEpisodeService, EpisodeService>();
         services.AddScoped<IFavoritesService, FavoritesService>();
+        services.AddScoped<IStatisticsSerivce, StatisticsService>();
         return services;
     }
 }

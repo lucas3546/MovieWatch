@@ -46,7 +46,8 @@ public class AuthService : IAuthService
             Password = request.Password,
             Email = request.Email,
             Role = role,
-            Favorites = favorites
+            Favorites = favorites,
+            RegistrationUser = DateTime.UtcNow
         };
 
         await _userRepository.AddAsync(user);

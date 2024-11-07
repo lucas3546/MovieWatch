@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieInfo.Infraestructure.Persistence;
 
@@ -10,9 +11,11 @@ using MovieInfo.Infraestructure.Persistence;
 namespace MovieInfo.Infraestructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241107213414_Statistics")]
+    partial class Statistics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -347,32 +350,32 @@ namespace MovieInfo.Infraestructure.Migrations
                         new
                         {
                             Id = 1,
-                            ExpirationDate = new DateTime(2029, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1844),
-                            StartDate = new DateTime(2024, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1843),
+                            ExpirationDate = new DateTime(2029, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2939),
+                            StartDate = new DateTime(2024, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2935),
                             State = 0,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ExpirationDate = new DateTime(2029, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1857),
-                            StartDate = new DateTime(2024, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1856),
+                            ExpirationDate = new DateTime(2029, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2951),
+                            StartDate = new DateTime(2024, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2951),
                             State = 0,
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
-                            ExpirationDate = new DateTime(2029, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1859),
-                            StartDate = new DateTime(2024, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1859),
+                            ExpirationDate = new DateTime(2029, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2954),
+                            StartDate = new DateTime(2024, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2953),
                             State = 0,
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
-                            ExpirationDate = new DateTime(2029, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1861),
-                            StartDate = new DateTime(2024, 11, 7, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1861),
+                            ExpirationDate = new DateTime(2029, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2956),
+                            StartDate = new DateTime(2024, 11, 7, 21, 34, 13, 321, DateTimeKind.Utc).AddTicks(2956),
                             State = 1,
                             UserId = 4
                         });
@@ -439,7 +442,7 @@ namespace MovieInfo.Infraestructure.Migrations
                             Email = "administrador@gmail.com",
                             Name = "Administrador",
                             Password = "Administrador1",
-                            RegistrationUser = new DateTime(2024, 10, 23, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1349),
+                            RegistrationUser = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = 3
                         },
                         new
@@ -448,7 +451,7 @@ namespace MovieInfo.Infraestructure.Migrations
                             Email = "empleado@gmail.com",
                             Name = "Empleado",
                             Password = "Empleado1",
-                            RegistrationUser = new DateTime(2024, 11, 6, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1377),
+                            RegistrationUser = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = 2
                         },
                         new
@@ -457,7 +460,7 @@ namespace MovieInfo.Infraestructure.Migrations
                             Email = "usuario1@gmail.com",
                             Name = "Usuario1",
                             Password = "Usuario1",
-                            RegistrationUser = new DateTime(2024, 9, 28, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1608),
+                            RegistrationUser = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = 1
                         },
                         new
@@ -466,7 +469,7 @@ namespace MovieInfo.Infraestructure.Migrations
                             Email = "usuario2@gmail.com",
                             Name = "Usuario2",
                             Password = "Usuario2",
-                            RegistrationUser = new DateTime(2024, 10, 30, 22, 53, 59, 846, DateTimeKind.Utc).AddTicks(1614),
+                            RegistrationUser = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             RoleId = 1
                         });
                 });

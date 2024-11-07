@@ -25,10 +25,10 @@ public static class ApplicationDbContextSeed
         new Role { Id = 3, RoleName = Roles.Admin });
 
         builder.Entity<User>().HasData(
-            new User { Id = 1, Name = "Administrador", Email = "administrador@gmail.com", Password = "Administrador1", RoleId = 3 },
-            new User { Id = 2, Name = "Empleado", Email = "empleado@gmail.com", Password = "Empleado1", RoleId = 2 },
-            new User { Id = 3, Name = "Usuario1", Email = "usuario1@gmail.com", Password = "Usuario1", RoleId = 1 },
-            new User { Id = 4, Name = "Usuario2", Email = "usuario2@gmail.com", Password = "Usuario2", RoleId = 1 }
+            new User { Id = 1, Name = "Administrador", Email = "administrador@gmail.com", RegistrationUser = DateTime.UtcNow.AddDays(-15), Password = "Administrador1", RoleId = 3 },
+            new User { Id = 2, Name = "Empleado", Email = "empleado@gmail.com", RegistrationUser = DateTime.UtcNow.AddDays(-1), Password = "Empleado1", RoleId = 2 },
+            new User { Id = 3, Name = "Usuario1", Email = "usuario1@gmail.com", RegistrationUser = DateTime.UtcNow.AddDays(-40), Password = "Usuario1", RoleId = 1 },
+            new User { Id = 4, Name = "Usuario2", Email = "usuario2@gmail.com", RegistrationUser = DateTime.UtcNow.AddDays(-8) ,Password = "Usuario2", RoleId = 1 }
 
         );
 

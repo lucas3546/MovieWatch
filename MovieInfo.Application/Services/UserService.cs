@@ -73,7 +73,6 @@ public class UserService : IUserService
 
         user.Name = request.Name;
         user.Email = request.Email;
-        user.Password = request.Password;
         user.Role = role;
 
         await _userRepository.UpdateAsync(user);

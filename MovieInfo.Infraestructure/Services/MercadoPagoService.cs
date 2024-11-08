@@ -48,9 +48,9 @@ public class MercadoPagoService : IMercadoPagoService
 
         var back_urls = new PreferenceBackUrlsRequest
         {
-            Success = "https://localhost:3000/payment/success",
-            Pending = "https://localhost:3000/payment/pending",
-            Failure = "https://localhost:3000/payment/failure",
+            Success = "http://localhost:3001/payment/success",
+            Pending = "http://localhost:3001/payment/pending",
+            Failure = "http://localhost:3001/payment/failure",
         };
 
 

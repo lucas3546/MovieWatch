@@ -57,7 +57,7 @@ public class AuthController : ApiControllerBase
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
-        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure=false, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
+        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure=false, SameSite = SameSiteMode.Unspecified, Expires = DateTimeOffset.UtcNow.AddHours(3), Domain = "localhost" });
 
         return Ok(result.Value.Jwt);
     }
@@ -71,12 +71,12 @@ public class AuthController : ApiControllerBase
     [Authorize]
     public async Task<ActionResult<string>> Refresh()
     {
-        if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken)) return BadRequest("You don't have a refresh token in the cookie!");
+        //if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken)) return BadRequest("You don't have a refresh token in the cookie!");
 
         var userName = _currentUser.Name;
         if (userName is null) return Forbid("You don't have permissions to use this");
-
-        var result = await _authService.RefreshToken(refreshToken, userName);
+        
+        var result = await _authService.RefreshToken("refreshToken", userName);
 
         if (result.IsFailed)
         {
@@ -89,7 +89,7 @@ public class AuthController : ApiControllerBase
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
 
-        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure = false, SameSite = SameSiteMode.None, Expires = DateTimeOffset.UtcNow.AddHours(3) });
+        Response.Cookies.Append("X-Refresh-Token", result.Value.RefreshToken, new CookieOptions() { HttpOnly = true, Secure = false, SameSite = SameSiteMode.Unspecified, Expires = DateTimeOffset.UtcNow.AddHours(3), Domain = "localhost" });
 
         return Ok(result.Value.Jwt);
     }

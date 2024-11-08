@@ -146,7 +146,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult> CreateSeasonAsync(CreateSeasonRequest request)
         {
             var result = await _seriesService.AddSeasonToSeriesAsync(request);
@@ -186,7 +186,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult> DeleteSeasonFromSerieAsync([FromQuery] int idSeason)
         {
             var season = await _seriesService.DeleteSeasonToSerieAsync(idSeason);
@@ -296,7 +296,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult> DeleteEpisodeAsync(int Id)
         {
             var episode = await _episodeService.DeleteEpisodeByIdAsync(Id);

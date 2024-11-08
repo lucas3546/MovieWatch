@@ -29,7 +29,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult<IEnumerable<GetLastRegisteredUserResponse>>> LastRegisteredUsers()
         {
             var result = await _statitics.LastRegisteredUsers();
@@ -52,7 +52,7 @@ namespace MovieInfo.Api.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[Authorize(Policy = "AdminOrEmployeePolicy")]
+        [Authorize(Policy = "AdminOrEmployeePolicy")]
         public async Task<ActionResult<IEnumerable<(string, DateTime)>>> PercentageOfUsersLastMonth()
         {
             var result = await _statitics.PercentageOfUsersLastMonth();

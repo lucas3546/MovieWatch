@@ -180,14 +180,14 @@ namespace MovieInfo.Api.Controllers
         }
 
 
-        [HttpDelete("delete-season-from-serie")]
+        [HttpDelete("delete-season-from-serie/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize(Policy = "AdminOrEmployeePolicy")]
-        public async Task<ActionResult> DeleteSeasonFromSerieAsync([FromQuery] int idSeason)
+        public async Task<ActionResult> DeleteSeasonFromSerieAsync(int idSeason)
         {
             var season = await _seriesService.DeleteSeasonToSerieAsync(idSeason);
 

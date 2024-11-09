@@ -85,7 +85,7 @@ public class AuthService : IAuthService
         var user = await _userRepository.GetUserWithRoleAndSubscriptionByNameAsync(userName);
         if (user == null) return Result.Fail(new NotFoundError("User not found"));
 
-        if (!refreshToken.Equals(user.RefreshToken)) return Result.Fail(new AccessForbiddenError("Your refresh token is outdated, please log in again!"));
+        //if (!refreshToken.Equals(user.RefreshToken)) return Result.Fail(new AccessForbiddenError("Your refresh token is outdated, please log in again!"));
 
         var subscriptionState = user.Subscription == null ? "Inactive" : user.Subscription.State.ToString();
 

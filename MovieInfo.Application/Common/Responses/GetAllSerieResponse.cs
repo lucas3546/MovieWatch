@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace MovieInfo.Application.Common.Responses
 {
-    public record GetAllSerieResponse(int Id, string Title, string SereiCoverUrl, IEnumerable<string> Genres);
+    public record GetAllSerieResponse(int Id, string Title, string SerieCoverUrl, IEnumerable<string> Genres);
 }

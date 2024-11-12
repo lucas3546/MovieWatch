@@ -110,4 +110,24 @@ public class SubscriptionController : ApiControllerBase
         }
         return NoContent();
     }
+    [HttpPut("invalidate/{userName}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> InvalidateSubscriptionToUser(string userName)
+    {
+        var result = await _subscriptionService.InvalidateSubscriptionToUser(userName);
+        if (result.IsFailed)
+        {
+            var error = result.Errors.First();
+
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
+
+            return BadRequest(new ApiErrorResponse("Errors", result.Errors));
+        }
+        return NoContent();
+    }
 }

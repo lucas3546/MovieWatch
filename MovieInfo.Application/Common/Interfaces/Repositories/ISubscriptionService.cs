@@ -15,4 +15,5 @@ public interface ISubscriptionService
     Task<Result<string>> CreateSubscriptionPreference(CreateSubscriptionPreferenceRequest request);
     Task<Result> UpdateSubscriptionPreference(UpdateSubscriptionPreferenceRequest request);
     Task<Result> RemoveActualSubscription();
+    Task<Result> InvalidateSubscriptionToUser(string userName);
 }

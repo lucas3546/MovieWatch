@@ -131,4 +131,20 @@ public class SubscriptionService :  ISubscriptionService
 
         return Result.Ok();
     }
+
+    public async Task<Result> InvalidateSubscriptionToUser(string userName)
+    {
+        var user = await _userRepository.GetUserWithRoleAndSubscriptionByNameAsync(userName);
+        if (user is null) return Result.Fail(new NotFoundError("User not found ;("));
+
+        if (user.Subscription is null) return Result.Fail(new NotFoundError("This user doesn't have a subscription ;("));
+
+        if (user.Subscription.State == SubscriptionState.Expired) return Result.Fail(new NotFoundError("The subscription of this user already are expired."));
+
+        user.Subscription.State = SubscriptionState.Expired;
+
+        await _userRepository.UpdateAsync(user);
+
+        return Result.Ok();
+    }
 }

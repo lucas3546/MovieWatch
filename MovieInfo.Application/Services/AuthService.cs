@@ -72,6 +72,7 @@ public class AuthService : IAuthService
         var claimsForToken = new List<Claim>();
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString())); 
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
         claimsForToken.Add(new Claim("role", user.Role.RoleName));
         claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
 
@@ -96,6 +97,7 @@ public class AuthService : IAuthService
         var claimsForToken = new List<Claim>();
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
         claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Name, user.Name));
+        claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
         claimsForToken.Add(new Claim("role", user.Role.RoleName));
         claimsForToken.Add(new Claim("subscriptionState", subscriptionState));
 

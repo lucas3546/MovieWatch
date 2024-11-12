@@ -77,7 +77,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteUserAsync(string name)
     {
         var user = await _userService.DeleteUserAsync(name);

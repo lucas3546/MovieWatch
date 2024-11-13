@@ -117,7 +117,7 @@ public class AuthService : IAuthService
 
         string jwtForResetPassword = _jwtService.GenerateToken(claimsForToken, DateTime.UtcNow.AddMinutes(20));
 
-        var emailSendingResult = await _emailService.SendEmailAsync(user.Email, "Reset Password", $"Reset your password with this url: https://localhost:3001/reset-password?token={jwtForResetPassword} this is only valid for 20 minutes");
+        var emailSendingResult = await _emailService.SendEmailAsync(user.Email, "Reset Password", $"Reset your password with this url: http://localhost:3001/reset-password?token={jwtForResetPassword} this is only valid for 20 minutes");
         if (!emailSendingResult) return Result.Fail("An error ocurred when sending the email");
 
         Console.WriteLine(jwtForResetPassword);

@@ -96,6 +96,7 @@ public class AuthController : ApiControllerBase
 
     [HttpPost("request-reset-password")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> RequestResetPassword([FromBody][EmailAddress] string Email)
     {
@@ -104,6 +105,8 @@ public class AuthController : ApiControllerBase
         if (result.IsFailed)
         {
             var error = result.Errors.First();
+
+            if (error is NotFoundError) return NotFound(new ApiErrorResponse("NotFound", error.Message));
 
             return BadRequest(new ApiErrorResponse("Errors", result.Errors));
         }
